@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>在线斗地主</title>
+  <title>沟通牌</title>
   <link rel="stylesheet" href="/css/style.css">
 </head>
 
@@ -215,10 +215,6 @@
   <script src="/js/parser.js"></script>
   <script>
 
-
-
-
-
     function createClient(url) {
       var socket = io.connect('ws://' + url);
       return socket;
@@ -232,9 +228,10 @@
             '你的牌打得太好了',
             '快点吧，我等到花儿也谢了！',
             '不要走，决战到天亮。',
-            '和你合作真是太愉快了',
-            '你是GG还是MM？',
-            '不要吵了，专心玩游戏吧！',
+            '要不起！',
+            '炸炸炸炸炸炸。',
+            '我有6个王！',
+            '我有12个2！',
           ],
           msgList: [],//聊天消息
 
@@ -249,7 +246,7 @@
           //房间状态
           roomState: {
             state: 0,//0准备状态 1叫分状态 2打牌状态 3结束状态
-            ctxPos: '', //当前该哪个座位谁出牌或叫分 left right or self
+            ctxPos: '', //当前该哪个座位谁出牌或叫分 //left right or self  p0 p1 p2 p3 p4 p5 p6 p7
             ctxCard: { //上家玩家的牌型
               len: 0,
               key: '',
@@ -265,7 +262,7 @@
             top: {
               cards: []
             },
-            left: {
+            p0:{
               state: 0,//0没人，1未准备 2准备
               cards: [],
               ctxCards: [],
@@ -274,7 +271,7 @@
               callScore: -1,
               name: '游客'
             },
-            right: {
+            p1:{
               state: 0,//0没人，1未准备 2准备
               cards: [],
               ctxCards: [],
@@ -283,15 +280,87 @@
               callScore: -1,
               name: '游客'
             },
-            self: {
+            p2:{
               state: 0,//0没人，1未准备 2准备
               cards: [],
               ctxCards: [],
               isPass: false,
               isDizhu: false,
               callScore: -1,
-              name: ''
-            }
+              name: '游客'
+            },
+            p3:{
+              state: 0,//0没人，1未准备 2准备
+              cards: [],
+              ctxCards: [],
+              isPass: false,
+              isDizhu: false,
+              callScore: -1,
+              name: '游客'
+            },
+            p4:{
+              state: 0,//0没人，1未准备 2准备
+              cards: [],
+              ctxCards: [],
+              isPass: false,
+              isDizhu: false,
+              callScore: -1,
+              name: '游客'
+            },
+            p5:{
+              state: 0,//0没人，1未准备 2准备
+              cards: [],
+              ctxCards: [],
+              isPass: false,
+              isDizhu: false,
+              callScore: -1,
+              name: '游客'
+            },
+            p6:{
+              state: 0,//0没人，1未准备 2准备
+              cards: [],
+              ctxCards: [],
+              isPass: false,
+              isDizhu: false,
+              callScore: -1,
+              name: '游客'
+            },
+            p7:{
+              state: 0,//0没人，1未准备 2准备
+              cards: [],
+              ctxCards: [],
+              isPass: false,
+              isDizhu: false,
+              callScore: -1,
+              name: '游客'
+            },
+            // left: {
+            //   state: 0,//0没人，1未准备 2准备
+            //   cards: [],
+            //   ctxCards: [],
+            //   isPass: false,
+            //   isDizhu: false,
+            //   callScore: -1,
+            //   name: '游客'
+            // },
+            // right: {
+            //   state: 0,//0没人，1未准备 2准备
+            //   cards: [],
+            //   ctxCards: [],
+            //   isPass: false,
+            //   isDizhu: false,
+            //   callScore: -1,
+            //   name: '游客'
+            // },
+            // self: {
+            //   state: 0,//0没人，1未准备 2准备
+            //   cards: [],
+            //   ctxCards: [],
+            //   isPass: false,
+            //   isDizhu: false,
+            //   callScore: -1,
+            //   name: ''
+            // }
           }
         }
       },
@@ -633,14 +702,18 @@
             pos.state = state;
           }
         },
-        //通过posId获取是哪个方向的坐位
+        // 通过posId获取是哪个方向的坐位
         getDirectionByPosId: function (posId) {
           var mapping = {
             0: {
-              0: 'self',
-              1: 'right',
-              2: 'left',
-              3: 'top',
+              0: 'p3',
+              1: 'p4',
+              2: 'p5',
+              3: 'p6',
+              4: 'p7',
+              5: 'p0',
+              6: 'p1',
+              7: 'p2',
             },
             1: {
               1: 'self',

@@ -179,11 +179,12 @@ const proto = {
     }
     return true;
   },
+  // 检查是否全部已经准备好了
   checkPrepareAll(deskId) {
     const desk = this.getDesk(deskId);
     if (desk) {
       const positions = desk.positions;
-      for (let i = 0; i < 3; i++) {
+      for (let i = 0; i < 8; i++) {
         if (positions[i].state !== 2) {
           return false;
         }
@@ -474,15 +475,15 @@ const proto = {
           if (game) {
             const status = game.getStatus();
             if (game && status && status !== 3) {
-              //更新其它两位玩家的座位状态为未准备
+              //更新其它玩家的座位状态为未准备
               this.updateOtherPosStatus(deskId, posId, 1);
-              //获取其它两位玩家的座位信息
+              //获取其它玩家的座位信息
               const otherPosInfo = this.getOtherPosInfo(deskId, posId);
-              //通知其它两位玩家重置自己的状态为未准备
+              //通知其它玩家重置自己的状态为未准备
               this.broadCastRoom("POS_STATUS_RESET", deskId, { pos: otherPosInfo, state: 1 });
-              //通知其它两位玩家重置房间状态
+              //通知其它玩家重置房间状态
               this.broadCastRoom('ROOM_STATUS_CHANGE', deskId, { state: 0 });
-              //通知其它两位玩家当前玩家逃跑
+              //通知其它玩家当前玩家逃跑
               this.broadCastRoom('FORCE_EXIT_EV', deskId, { msg: '有玩家逃跑，游戏结束', posId });
               game.init();
             }
