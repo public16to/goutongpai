@@ -360,10 +360,21 @@
     background: #297077;
 }
 
+
+.btn-system{
+    position: fixed;
+    bottom: 50%;
+    left: 50%;
+    z-index: 999;
+    transform: translateX(-50%);
+}
+
 .btn-exit-room {
-    position: absolute;
-    right: 10px;
-    top: 10px;
+    
+}
+
+.btn-prepare {
+
 }
 
 
@@ -402,13 +413,6 @@
     top: 50%;
     left: 100px;
     transform: translateY(-50%);
-}
-
-.btn-prepare {
-    position: fixed;
-    bottom: 10px;
-    left: 50%;
-    transform: translateX(-50%);
 }
 
 button {
@@ -527,14 +531,14 @@ button {
     position: fixed;
     top: 50%;
     left: 0;
-    height: 120px;
+    height: 100%;
     width: 100%;
     transform: translateY(-50%);
 }
 
 .player-wrapper{
-    height: 100px;
-    width: 100px;
+    height: 150px;
+    width: 150px;
     color: #fff;
     position: absolute;
 }
@@ -558,14 +562,55 @@ button {
 .text-center{
     text-align: center
 }
-.player-right{
-    right: 0;
+.player-wrapper.player-p0{
+    position: absolute;
+    left: 0;
+    top: 0;
 }
-.player-wrapper.player-self{
-    position: fixed;
-    bottom: 50px;
+.player-wrapper.player-p1{
+    position: absolute;
+    left: 0;
+    top: 50%;
+    margin-top: -75px;
+}
+.player-wrapper.player-p2{
+    position: absolute;
+    left: 0;
+    bottom: 0;
+}
+
+.player-wrapper.player-p4{
+    position: absolute;
+    right: 0;
+    bottom: 0;
+}
+
+.player-wrapper.player-p5{
+    position: absolute;
+    right: 0;
+    top: 50%;
+    margin-top: -75px;
+}
+
+.player-wrapper.player-p6{
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+.player-wrapper.player-p7{
+    position: absolute;
+    right: 50%;
+    margin-right: -75px;
+    top: 0;
+}
+
+
+.player-wrapper.player-p3{
+    position: absolute;
+    bottom: 0;
     left:50%;
-    transform: translateX(-50%);
+    margin-left: -75px;
 }
 .player-self-ctx{
 position: absolute;

@@ -1,0 +1,47 @@
+<!-- 出牌区域 -->
+      <div class="screen-center">
+        <!-- 左家的出牌区域 -->
+        <div class="card-ctx card-ctx-left" :style="{width:posState.left.ctxCards.length * 20 + 70 + 'px'}">
+          <template v-if="roomState.state === 2">
+            <div v-if="!posState.left.isPass" @dragStart="dragStart($event)" v-for="(card,index) in posState.left.ctxCards"
+              class="card" :class="'card-' + card.value + '-' + card.type" :style="{left:index * 20 + 'px'}">
+            </div>
+            <div v-if="posState.left.isPass" class="score-tipe">
+              不出
+            </div>
+          </template>
+          <span class="score-tipe" v-if="roomState.state == 1 && posState.left.callScore > -1">{{posState.left.callScore
+            > 0 ? posState.left.callScore + '分' : '不叫' }}</span>
+
+        </div>
+        <!-- 自己的出牌区域 -->
+        <div class="card-ctx card-ctx-self" :style="{width:posState.p3.ctxCards.length * 20 + 70 + 'px'}">
+          <template v-if="roomState.state === 2">
+            <div v-if="!posState.p3.isPass" @dragStart="dragStart($event)" v-for="(card,index) in posState.p3.ctxCards"
+              class="card" :class="'card-' + card.value + '-' + card.type" :style="{left:index * 20 + 'px'}">
+            </div>
+            <div v-if="posState.p3.isPass" class="score-tipe">
+              不出
+            </div>
+          </template>
+          <span class="score-tipe" v-if="roomState.state == 1 && posState.p3.callScore > -1">
+            {{posState.p3.callScore
+            > 0 ? posState.p3.callScore + '分' : '不叫' }}
+          </span>
+
+        </div>
+        <!-- 右家的出牌区域 -->
+        <div class="card-ctx card-ctx-right" :style="{width:posState.right.ctxCards.length * 20 + 70 + 'px'}">
+          <template v-if="roomState.state === 2">
+            <div v-if="!posState.right.isPass" @dragStart="dragStart($event)" v-for="(card,index) in posState.right.ctxCards"
+              class="card" :class="'card-' + card.value + '-' + card.type" :style="{left:index * 20 + 'px'}">
+            </div>
+            <div v-if="posState.right.isPass" class="score-tipe">
+              不出
+            </div>
+          </template>
+          <span class="score-tipe" v-if="roomState.state == 1 && posState.right.callScore > -1">{{posState.right.callScore
+            > 0 ? posState.right.callScore + '分' : '不叫' }}</span>
+
+        </div>
+      </div>
