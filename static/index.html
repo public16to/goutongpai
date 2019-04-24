@@ -15,7 +15,7 @@
     <div class="full-screen login-wrapper" v-if="where === 0">
       <div class="login-panel  layout-center">
         <div class="row title">
-          登录游戏服务器
+          登录沟通牌服务器
         </div>
         <div class="login-form">
           <input type="text" class="input" placeholder="给自己取一个名字" v-model.trim="posState.p3.name" @keyup.enter="login"><button
@@ -32,9 +32,8 @@
       </div> -->
       <div v-for="desk in desks" class="desk">
         <div v-for="position in desk.positions" class="position" :class="{has:position.state,position0:position.posId === 0,position1:position.posId === 1,position2:position.posId === 2,position3:position.posId === 3,position4:position.posId === 4,position5:position.posId === 5,position6:position.posId === 6,position7:position.posId === 7}">
-          <span class="position-image" :class="{has:position.state}" @click="sitDown(desk.deskId,position)">
-          </span>
-          <span class="position-text" v-if="position.state">{{position.userName}}</span>
+          <span class="position-image" :class="{has:position.state===1,has2:position.state===2}" @click="sitDown(desk.deskId,position)"></span>
+          <span class="position-text">{{position.userName}}</span>
         </div>
         <div class="position-center">{{desk.deskId}}</div>
       </div>
@@ -43,8 +42,6 @@
 
     <!-- 房间 -->
     <div class="full-screen room" v-if="where === 2">
-      
-
       <div class="btn-group" v-if="roomState.state > 0 && roomState.state < 3 && roomState.ctxPos === 'p3'">
         <span class="clock">{{roomState.timeout}}</span>
         <template v-if="roomState.state === 1">
@@ -115,7 +112,7 @@
         </div>
       </div>
 
-      <div class="msg-box">
+      <!-- <div class="msg-box">
         <div class="msg-list scroll-bar" ref="msgBox">
           <div class="msg-item" v-for="msg in msgList" :key="msg.id">
             <span v-if="msg.type === 'USER'">
@@ -133,7 +130,7 @@
         </select>
         <button class="msg-btn" @click="sendMessage(false)">发送</button>
       </div>
-    </div>
+    </div> -->
 
   </div>
   <script src="/js/vue.min.js"></script>
@@ -318,17 +315,10 @@
             layer.msg(data.msg);
           }.bind(this));
 
-          this.client.on('QUICK_JOIN', function (data) {
-            if (data.success) {
-              this.client.emit('SITDOWN', { deskId: data.deskId, posId: data.posId })
-            } else {
-              layer.closeAll();
-              layer.msg('快速加入失败');
-            }
-          }.bind(this));
 
 
           this.client.on('SITDOWN_SUCCESS', function (data) {
+            console.log(data);
             this.where = 2;
             this.posId = data.posId;
             this.deskId = data.deskId;
@@ -361,7 +351,8 @@
           }.bind(this));
 
           this.client.on('STATUS_CHANGE', function (data) {
-            this.updateHouseStatus(data.deskId, data.posId, data.state);
+            console.log(data);
+            this.updateHouseStatus(data.deskId, data.posId, data.state,data.userName);
           }.bind(this));
 
           this.client.on('POS_STATUS_CHANGE', function (data) {
@@ -371,7 +362,7 @@
 
           this.client.on('POS_STATUS_RESET', function (data) {
             data.pos.forEach(function (pos) {
-              this.updatePosStatus(pos.posId, data.state);
+              this.updatePosStatus(pos.posId, data.state,data.userName);
             }.bind(this));
           }.bind(this));
 
@@ -666,10 +657,11 @@
 
           }
         }(),
-        updateHouseStatus: function (deskId, posId, state) {
+        updateHouseStatus: function (deskId, posId, state,userName) {
           var pos = this.getPos(deskId, posId);
           if (pos) {
             pos.state = state;
+            pos.userName = userName;
           }
         },
         // 通过posId获取是哪个方向的坐位

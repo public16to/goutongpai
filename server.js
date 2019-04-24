@@ -255,7 +255,7 @@ const proto = {
         const { deskId, posId } = data;
         //检查该座位是否是空闲状态
         if (this.isEmptyPos(deskId, posId)) {
-          console.log('有客户端进入房间，桌号：%s，座位：%s，时间： %s', deskId, posId, time());
+          console.log('有用户[%s]进入房间，桌号：%s，座位：%s，时间： %s',this.getUserName(socket) ,deskId, posId, time());
           //更新座位状态为占用
           this.updatePosStatus(deskId, posId, 1, this.getUserName(socket));
           //绑定客户端桌号，座位号
@@ -265,7 +265,7 @@ const proto = {
           //通知该客户端坐下成功 并发送当前房间的信息给该客户端
           socket.emit('SITDOWN_SUCCESS', { ...data, posInfos });
           //通知在大厅游览的所有客户端当前坐位已被占用
-          this.broadCastHouse('STATUS_CHANGE', { deskId, posId, state: 1 });
+          this.broadCastHouse('STATUS_CHANGE', { deskId, posId, state: 1,userName:this.getUserName(socket) });
 
           //通知在房间里的其它客户端，更新座位息
           this.broadCastRoom("POS_STATUS_CHANGE", deskId, { posId, state: 1, userName: this.getUserName(socket) }, socket);
@@ -290,7 +290,7 @@ const proto = {
         if (!deskId) {
           return;
         }
-        console.log('有客户端退出房间，桌号：%s，座位：%s，时间：', deskId, posId, time());
+        console.log('有用户[%s]退出房间，桌号：%s，座位：%s，时间：', this.getUserName(socket),deskId, posId, time());
         //更新座位状态
         this.updatePosStatus(deskId, posId, 0, '');
         //重置房间状态
@@ -300,7 +300,7 @@ const proto = {
         //通知在房间里的其它客户端，更新座位息
         this.broadCastRoom("POS_STATUS_CHANGE", deskId, { posId, state: 0 }, socket);
         //通知大厅其它客户端更新该座位信息
-        this.broadCastHouse('STATUS_CHANGE', { deskId, posId, state: 0 });
+        this.broadCastHouse('STATUS_CHANGE', { deskId, posId, state: 0,userName:"" });
 
         //如果在游戏中，则有玩家强行退出，重置此房间其它玩家的状态为未准备
         //获取此桌游戏数据
@@ -466,7 +466,7 @@ const proto = {
           //通知在房间里的其它客户端，更新座位息
           this.broadCastRoom("POS_STATUS_CHANGE", deskId, { posId, state: 0 }, socket);
           //通知大厅其它客户端更新该座位信息
-          this.broadCastHouse('STATUS_CHANGE', { deskId, posId, state: 0 });
+          this.broadCastHouse('STATUS_CHANGE', { deskId, posId, state: 0,userName:"" });
 
           //如果在游戏中，则有玩家强行退出，重置此房间其它玩家的状态为未准备
           //获取此桌游戏数据
