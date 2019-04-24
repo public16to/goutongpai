@@ -21,7 +21,82 @@ const originalCards = [
   { value: 14, type: 0 }, { value: 14, type: 1 }, { value: 14, type: 2 }, { value: 14, type: 3 },
   { value: 15, type: 0 }, { value: 15, type: 1 }, { value: 15, type: 2 }, { value: 15, type: 3 },
   { value: 16, type: 0 },
-  { value: 17, type: 0 }
+  { value: 17, type: 0 },
+  { value: 3, type: 0 }, { value: 3, type: 1 }, { value: 3, type: 2 }, { value: 3, type: 3 },
+  { value: 4, type: 0 }, { value: 4, type: 1 }, { value: 4, type: 2 }, { value: 4, type: 3 },
+  { value: 5, type: 0 }, { value: 5, type: 1 }, { value: 5, type: 2 }, { value: 5, type: 3 },
+  { value: 6, type: 0 }, { value: 6, type: 1 }, { value: 6, type: 2 }, { value: 6, type: 3 },
+  { value: 7, type: 0 }, { value: 7, type: 1 }, { value: 7, type: 2 }, { value: 7, type: 3 },
+  { value: 8, type: 0 }, { value: 8, type: 1 }, { value: 8, type: 2 }, { value: 8, type: 3 },
+  { value: 9, type: 0 }, { value: 9, type: 1 }, { value: 9, type: 2 }, { value: 9, type: 3 },
+  { value: 10, type: 0 }, { value: 10, type: 1 }, { value: 10, type: 2 }, { value: 10, type: 3 },
+  { value: 11, type: 0 }, { value: 11, type: 1 }, { value: 11, type: 2 }, { value: 11, type: 3 },
+  { value: 12, type: 0 }, { value: 12, type: 1 }, { value: 12, type: 2 }, { value: 12, type: 3 },
+  { value: 13, type: 0 }, { value: 13, type: 1 }, { value: 13, type: 2 }, { value: 13, type: 3 },
+  { value: 14, type: 0 }, { value: 14, type: 1 }, { value: 14, type: 2 }, { value: 14, type: 3 },
+  { value: 15, type: 0 }, { value: 15, type: 1 }, { value: 15, type: 2 }, { value: 15, type: 3 },
+  { value: 16, type: 0 },
+  { value: 17, type: 0 },
+  { value: 3, type: 0 }, { value: 3, type: 1 }, { value: 3, type: 2 }, { value: 3, type: 3 },
+  { value: 4, type: 0 }, { value: 4, type: 1 }, { value: 4, type: 2 }, { value: 4, type: 3 },
+  { value: 5, type: 0 }, { value: 5, type: 1 }, { value: 5, type: 2 }, { value: 5, type: 3 },
+  { value: 6, type: 0 }, { value: 6, type: 1 }, { value: 6, type: 2 }, { value: 6, type: 3 },
+  { value: 7, type: 0 }, { value: 7, type: 1 }, { value: 7, type: 2 }, { value: 7, type: 3 },
+  { value: 8, type: 0 }, { value: 8, type: 1 }, { value: 8, type: 2 }, { value: 8, type: 3 },
+  { value: 9, type: 0 }, { value: 9, type: 1 }, { value: 9, type: 2 }, { value: 9, type: 3 },
+  { value: 10, type: 0 }, { value: 10, type: 1 }, { value: 10, type: 2 }, { value: 10, type: 3 },
+  { value: 11, type: 0 }, { value: 11, type: 1 }, { value: 11, type: 2 }, { value: 11, type: 3 },
+  { value: 12, type: 0 }, { value: 12, type: 1 }, { value: 12, type: 2 }, { value: 12, type: 3 },
+  { value: 13, type: 0 }, { value: 13, type: 1 }, { value: 13, type: 2 }, { value: 13, type: 3 },
+  { value: 14, type: 0 }, { value: 14, type: 1 }, { value: 14, type: 2 }, { value: 14, type: 3 },
+  { value: 15, type: 0 }, { value: 15, type: 1 }, { value: 15, type: 2 }, { value: 15, type: 3 },
+  { value: 16, type: 0 },
+  { value: 17, type: 0 },
+  { value: 3, type: 0 }, { value: 3, type: 1 }, { value: 3, type: 2 }, { value: 3, type: 3 },
+  { value: 4, type: 0 }, { value: 4, type: 1 }, { value: 4, type: 2 }, { value: 4, type: 3 },
+  { value: 5, type: 0 }, { value: 5, type: 1 }, { value: 5, type: 2 }, { value: 5, type: 3 },
+  { value: 6, type: 0 }, { value: 6, type: 1 }, { value: 6, type: 2 }, { value: 6, type: 3 },
+  { value: 7, type: 0 }, { value: 7, type: 1 }, { value: 7, type: 2 }, { value: 7, type: 3 },
+  { value: 8, type: 0 }, { value: 8, type: 1 }, { value: 8, type: 2 }, { value: 8, type: 3 },
+  { value: 9, type: 0 }, { value: 9, type: 1 }, { value: 9, type: 2 }, { value: 9, type: 3 },
+  { value: 10, type: 0 }, { value: 10, type: 1 }, { value: 10, type: 2 }, { value: 10, type: 3 },
+  { value: 11, type: 0 }, { value: 11, type: 1 }, { value: 11, type: 2 }, { value: 11, type: 3 },
+  { value: 12, type: 0 }, { value: 12, type: 1 }, { value: 12, type: 2 }, { value: 12, type: 3 },
+  { value: 13, type: 0 }, { value: 13, type: 1 }, { value: 13, type: 2 }, { value: 13, type: 3 },
+  { value: 14, type: 0 }, { value: 14, type: 1 }, { value: 14, type: 2 }, { value: 14, type: 3 },
+  { value: 15, type: 0 }, { value: 15, type: 1 }, { value: 15, type: 2 }, { value: 15, type: 3 },
+  { value: 16, type: 0 },
+  { value: 17, type: 0 },
+  { value: 3, type: 0 }, { value: 3, type: 1 }, { value: 3, type: 2 }, { value: 3, type: 3 },
+  { value: 4, type: 0 }, { value: 4, type: 1 }, { value: 4, type: 2 }, { value: 4, type: 3 },
+  { value: 5, type: 0 }, { value: 5, type: 1 }, { value: 5, type: 2 }, { value: 5, type: 3 },
+  { value: 6, type: 0 }, { value: 6, type: 1 }, { value: 6, type: 2 }, { value: 6, type: 3 },
+  { value: 7, type: 0 }, { value: 7, type: 1 }, { value: 7, type: 2 }, { value: 7, type: 3 },
+  { value: 8, type: 0 }, { value: 8, type: 1 }, { value: 8, type: 2 }, { value: 8, type: 3 },
+  { value: 9, type: 0 }, { value: 9, type: 1 }, { value: 9, type: 2 }, { value: 9, type: 3 },
+  { value: 10, type: 0 }, { value: 10, type: 1 }, { value: 10, type: 2 }, { value: 10, type: 3 },
+  { value: 11, type: 0 }, { value: 11, type: 1 }, { value: 11, type: 2 }, { value: 11, type: 3 },
+  { value: 12, type: 0 }, { value: 12, type: 1 }, { value: 12, type: 2 }, { value: 12, type: 3 },
+  { value: 13, type: 0 }, { value: 13, type: 1 }, { value: 13, type: 2 }, { value: 13, type: 3 },
+  { value: 14, type: 0 }, { value: 14, type: 1 }, { value: 14, type: 2 }, { value: 14, type: 3 },
+  { value: 15, type: 0 }, { value: 15, type: 1 }, { value: 15, type: 2 }, { value: 15, type: 3 },
+  { value: 16, type: 0 },
+  { value: 17, type: 0 },
+  { value: 3, type: 0 }, { value: 3, type: 1 }, { value: 3, type: 2 }, { value: 3, type: 3 },
+  { value: 4, type: 0 }, { value: 4, type: 1 }, { value: 4, type: 2 }, { value: 4, type: 3 },
+  { value: 5, type: 0 }, { value: 5, type: 1 }, { value: 5, type: 2 }, { value: 5, type: 3 },
+  { value: 6, type: 0 }, { value: 6, type: 1 }, { value: 6, type: 2 }, { value: 6, type: 3 },
+  { value: 7, type: 0 }, { value: 7, type: 1 }, { value: 7, type: 2 }, { value: 7, type: 3 },
+  { value: 8, type: 0 }, { value: 8, type: 1 }, { value: 8, type: 2 }, { value: 8, type: 3 },
+  { value: 9, type: 0 }, { value: 9, type: 1 }, { value: 9, type: 2 }, { value: 9, type: 3 },
+  { value: 10, type: 0 }, { value: 10, type: 1 }, { value: 10, type: 2 }, { value: 10, type: 3 },
+  { value: 11, type: 0 }, { value: 11, type: 1 }, { value: 11, type: 2 }, { value: 11, type: 3 },
+  { value: 12, type: 0 }, { value: 12, type: 1 }, { value: 12, type: 2 }, { value: 12, type: 3 },
+  { value: 13, type: 0 }, { value: 13, type: 1 }, { value: 13, type: 2 }, { value: 13, type: 3 },
+  { value: 14, type: 0 }, { value: 14, type: 1 }, { value: 14, type: 2 }, { value: 14, type: 3 },
+  { value: 15, type: 0 }, { value: 15, type: 1 }, { value: 15, type: 2 }, { value: 15, type: 3 },
+  { value: 16, type: 0 },
+  { value: 17, type: 0 },
 ];
 
 
@@ -57,9 +132,9 @@ Object.assign(
       var ret = [];
       var mCards = originalCards.slice(0);
       var maxIndex = mCards.length - 1;
-      for (var i = 0; i < 3; i++) {
+      for (var i = 0; i < 8; i++) {
         var group = [];
-        for (var j = 0; j < 17; j++) {
+        for (var j = 0; j < 40; j++) {
           var offset = getRandomNumForRange(maxIndex);
           group.push(mCards[offset]);
           mCards.splice(offset, 1);
@@ -70,7 +145,7 @@ Object.assign(
         });
         ret.push({ id: i, cards: group });
       }
-      ret.push({ id: 3, cards: mCards });
+      ret.push({ id: 8, cards: mCards });
       this.contextCards = ret;
       return ret;
     },
