@@ -6,5 +6,10 @@
 npm start
 ```
 
+### History
+
+`2019-04-24`  
+完成desk的列表，正常入座后到游戏
+
 ### License
 MIT
