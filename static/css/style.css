@@ -391,8 +391,9 @@
 }
 
 .card-group-p3 {
-    bottom: 50px;
+    bottom: 100px;
     left: 50%;
+    z-index: 999;
     transform: translateX(-50%);
 
 }
@@ -405,44 +406,42 @@
     top: 10px;
     left: 50%;
     transform: translateX(-50%);
-
-
 }
 
 .card-group-p0 {
-    top: 50px;
-    left: 120px;
+    top: 100px;
+    left: 100px;
 }
 
 .card-group-p1 {
     top: 50%;
-    left: 120px;
-    transform: translateY(-50%);
+    left: 100px;
+    margin-top: -60px;
 }
 
 .card-group-p2 {
-    bottom: 50px;
-    left: 120px;
+    bottom: 100px;
+    left: 100px;
 }
 
 .card-group-p4 {
-    bottom: 50px;
-    right: 120px;
+    bottom: 100px;
+    right: 100px;
 }
 
 .card-group-p5 {
     top: 50%;
-    right: 120px;
-    transform: translateY(-50%);
+    right: 100px;
+    margin-top: -60px;
 }
 
 .card-group-p6 {
-    top: 50px;
-    right: 120px;
+    top: 100px;
+    right: 100px;
 }
 
 .card-group-p7 {
-    top: 50px;
+    top: 100px;
     left: 50%;
     transform: translateX(-50%);
 }
@@ -461,7 +460,7 @@ button {
 
 .btn-group {
     position: absolute;
-    bottom: 190px;
+    bottom: 250px;
     text-align: center;
     width: 100%;
     left: 0;
@@ -544,20 +543,50 @@ button {
 
 }
 
-.card-ctx-self {
-    top: 0;
+.card-ctx-p3 {
+    bottom: 300px;
     left: 50%;
+    z-index: 999;
     transform: translateX(-50%);
 }
 
-.card-ctx-left {
-    top: -130px;
-    left: 230px;
+.card-ctx-p0 {
+    top: 120px;
+    left: 320px;
 }
 
-.card-ctx-right {
-    top: -130px;
-    right: 230px;
+.card-ctx-p1 {
+    top: 50%;
+    left: 320px;
+    margin-top: -60px;
+}
+
+.card-ctx-p2 {
+    bottom: 120px;
+    left: 320px;
+}
+
+.card-ctx-p4 {
+    bottom: 120px;
+    right: 320px;
+}
+
+.card-ctx-p5 {
+    top: 50%;
+    margin-top: -60px;
+    right: 320px;
+}
+
+.card-ctx-p6 {
+    top: 120px;
+    right: 300px;
+}
+
+.card-ctx-p7 {
+    top: 300px;
+    left: 50%;
+    z-index: 999;
+    transform: translateX(-50%);
 }
 
 .screen-center {
@@ -570,14 +599,14 @@ button {
 }
 
 .player-wrapper{
-    height: 150px;
-    width: 150px;
+    height: 100px;
+    width: 100px;
     color: #fff;
     position: absolute;
 }
 .player-photo{
     width: 100%;
-    height: 80px;
+    height: 64px;
     background-image: url('../images/qq.png') ;
     background-repeat:  no-repeat;
     background-position:  center;
@@ -586,10 +615,12 @@ button {
     background-image: url('../images/qq-king.png')!important;
 }
 .player-name{
-    font-size: 16px;
-    line-height: 22px;
+    font-size: 14px;
+    line-height: 18px;
 }
 .player-status{
+    line-height: 16px;
+    font-size: 14px;
     text-shadow: 2px 2px 5px #000;
     color: rgb(25, 242, 0);
 }
@@ -605,7 +636,7 @@ button {
     position: absolute;
     left: 0;
     top: 50%;
-    margin-top: -75px;
+    margin-top: -50px;
 }
 .player-wrapper.player-p2{
     position: absolute;
@@ -623,7 +654,7 @@ button {
     position: absolute;
     right: 0;
     top: 50%;
-    margin-top: -75px;
+    margin-top: -50px;
 }
 
 .player-wrapper.player-p6{
@@ -635,7 +666,7 @@ button {
 .player-wrapper.player-p7{
     position: absolute;
     right: 50%;
-    margin-right: -75px;
+    margin-right: -50px;
     top: 0;
 }
 
@@ -644,11 +675,7 @@ button {
     position: absolute;
     bottom: 0;
     left:50%;
-    margin-left: -75px;
-}
-.player-self-ctx{
-position: absolute;
-right: -100px;
+    margin-left: -50px;
 }
 
 .login-wrapper{

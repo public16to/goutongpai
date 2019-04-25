@@ -18,12 +18,11 @@
           登录沟通牌服务器
         </div>
         <div class="login-form">
-          <input type="text" class="input" placeholder="给自己取一个名字" v-model.trim="posState.p3.name" @keyup.enter="login"><button
+          <input type="text" class="input" placeholder="给自己取一个名字" v-model.trim="posState.p3.name" @keyup.enter="login" autofocus ><button
             @click="login">确定</button>
         </div>
       </div>
     </div>
-
 
     <!-- 大厅 -->
     <div class="full-screen house" v-if="where === 1">
@@ -39,9 +38,10 @@
       </div>
     </div>
 
-
     <!-- 房间 -->
     <div class="full-screen room" v-if="where === 2">
+
+      <!-- 出牌按钮 -->
       <div class="btn-group" v-if="roomState.state > 0 && roomState.state < 3 && roomState.ctxPos === 'p3'">
         <span class="clock">{{roomState.timeout}}</span>
         <template v-if="roomState.state === 1">
@@ -55,11 +55,11 @@
 
       </div>
 
+      <!-- 系统按钮组 -->
       <div class="btn-system">
         <button v-if="posState.p3.state < 2" @click="exitRoom" class="btn-exit-room">返回大厅</button>
-        <button v-if="posState.p3.state < 2" @click="prepare" class="btn-prepare">准备</button>
+        <button v-if="posState.p3.state < 2" @click="prepare" class="btn-prepare" autofocus>准备</button>
       </div>
-
 
       <!-- 玩家头像 -->
       <div class="players">
@@ -99,37 +99,24 @@
             <div class="player-name text-center">{{posState.p7.name}}</div>
             <div class="text-center player-status" v-if="posState.p7.state === 2 && (roomState.state === 0 || roomState.state === 3)">已准备</div>
           </div>
-
-        </div>
-        <!-- 自己的位置  -->
-        <div class="player-wrapper player-p3" v-if="roomState.state === 0 || (roomState.state === 3 && posState.p3.state === 2)">
-          <div class="player-photo" :class="{'player-photo-king':posState.p3.isDizhu}"></div>
-          <div class="player-name text-center">{{posState.p3.name}}</div>
-          <div class="text-center player-status" v-if="posState.p3.state === 2 && (roomState.state === 0 || roomState.state === 3)">已准备</div>
-          <!-- <div class="text-center" v-if="posState.p3.isDizhu">
-          <img src="images/dizhu.png" alt="">
-        </div> -->
+          <div class="player-wrapper player-p3" v-if="posState.p3.state">
+            <div class="player-photo" :class="{'player-photo-king':posState.p3.isDizhu}"></div>
+            <div class="player-name text-center">{{posState.p3.name}}</div>
+            <div class="text-center player-status" v-if="posState.p3.state === 2 && (roomState.state === 0 || roomState.state === 3)">已准备</div>
+          </div>
         </div>
       </div>
 
+      <!-- 牌列表 -->
       <div class="card-groups" v-if="roomState.state">
         <!-- 自己的牌列表 -->
         <div class="card-group card-group-p3" :style="{width:posState.p3.cards.length * 20 + 70 + 'px'}" v-if="!(roomState.state === 3 && posState.p3.state === 2)">
           <div @dragStart="dragStart($event)" @click="selectCard(card)" v-for="(card,index) in posState.p3.cards"
             class="card" :class="'card-' + card.value + '-' + card.type" :style="{left:index * 20 + 'px',top:card.selected ? '-20px' : 0}">
           </div>
-          <!-- 自己的头像 -->
-          <div class="player-wrapper player-self-ctx">
-            <div class="player-photo" :class="{'player-photo-king':posState.p3.isDizhu}"></div>
-            <div class="player-name text-center">{{posState.p3.name}}</div>
-            <div class="text-center player-status" v-if="posState.p3.state === 2 && (roomState.state === 0 || roomState.state === 3)">准备</div>
-            <!-- <div class="text-center" v-if="posState.p3.isDizhu">
-             <img src="images/dizhu.png" alt="">
-           </div> -->
-          </div>
         </div>
         <!-- p0牌列表 -->
-        <div class="card-group card-group-p0" :style="{width:posState.p0.cards.length * 2 + 70 + 'px'}">
+        <div class="card-group card-group-p0" :style="{width:posState.p0.cards.length * 2 + 88 + 'px'}">
           <div @dragStart=" dragStart($event)" v-for="(card,index) in posState.p0.cards" class="card" :class="roomState.state === 3 ? 'card-' + card.value + '-' + card.type : 'card-unknow'"
             :style="{left:index * 2 + 'px'}">
           </div>
@@ -139,7 +126,7 @@
           <div class="text-tips text-tips-left text-left" v-if="roomState.state < 3">剩余：{{posState.p0.cards.length}}张</div>
         </div>
         <!-- p1牌列表 -->
-        <div class="card-group card-group-p1" :style="{width:posState.p1.cards.length * 2 + 70 + 'px'}">
+        <div class="card-group card-group-p1" :style="{width:posState.p1.cards.length * 2 + 88 + 'px'}">
           <div @dragStart=" dragStart($event)" v-for="(card,index) in posState.p1.cards" class="card" :class="roomState.state === 3 ? 'card-' + card.value + '-' + card.type : 'card-unknow'"
             :style="{left:index * 2 + 'px'}">
           </div>
@@ -149,7 +136,7 @@
           <div class="text-tips text-tips-left text-left" v-if="roomState.state < 3">剩余：{{posState.p1.cards.length}}张</div>
         </div>
         <!-- p2牌列表 -->
-        <div class="card-group card-group-p2" :style="{width:posState.p2.cards.length * 2 + 70 + 'px'}">
+        <div class="card-group card-group-p2" :style="{width:posState.p2.cards.length * 2 + 88 + 'px'}">
           <div @dragStart=" dragStart($event)" v-for="(card,index) in posState.p2.cards" class="card" :class="roomState.state === 3 ? 'card-' + card.value + '-' + card.type : 'card-unknow'"
             :style="{left:index * 2 + 'px'}">
           </div>
@@ -159,7 +146,7 @@
           <div class="text-tips text-tips-left text-left" v-if="roomState.state < 3">剩余：{{posState.p2.cards.length}}张</div>
         </div>
         <!-- p4牌列表 -->
-        <div class="card-group card-group-p4" :style="{width:posState.p4.cards.length * 2 + 70 + 'px'}">
+        <div class="card-group card-group-p4" :style="{width:posState.p4.cards.length * 2 + 88 + 'px'}">
           <div @dragStart=" dragStart($event)" v-for="(card,index) in posState.p4.cards" class="card" :class="roomState.state === 3 ? 'card-' + card.value + '-' + card.type : 'card-unknow'"
             :style="{left:index * 2 + 'px'}">
           </div>
@@ -169,7 +156,7 @@
           <div class="text-tips text-tips-left text-left" v-if="roomState.state < 3">剩余：{{posState.p4.cards.length}}张</div>
         </div>
         <!-- p5牌列表 -->
-        <div class="card-group card-group-p5" :style="{width:posState.p5.cards.length * 2 + 70 + 'px'}">
+        <div class="card-group card-group-p5" :style="{width:posState.p5.cards.length * 2 + 88 + 'px'}">
           <div @dragStart=" dragStart($event)" v-for="(card,index) in posState.p5.cards" class="card" :class="roomState.state === 3 ? 'card-' + card.value + '-' + card.type : 'card-unknow'"
             :style="{left:index * 2 + 'px'}">
           </div>
@@ -179,7 +166,7 @@
           <div class="text-tips text-tips-left text-left" v-if="roomState.state < 3">剩余：{{posState.p5.cards.length}}张</div>
         </div>
         <!-- p6牌列表 -->
-        <div class="card-group card-group-p6" :style="{width:posState.p6.cards.length * 2 + 70 + 'px'}">
+        <div class="card-group card-group-p6" :style="{width:posState.p6.cards.length * 2 + 88 + 'px'}">
           <div @dragStart=" dragStart($event)" v-for="(card,index) in posState.p6.cards" class="card" :class="roomState.state === 3 ? 'card-' + card.value + '-' + card.type : 'card-unknow'"
             :style="{left:index * 2 + 'px'}">
           </div>
@@ -189,7 +176,7 @@
           <div class="text-tips text-tips-left text-left" v-if="roomState.state < 3">剩余：{{posState.p6.cards.length}}张</div>
         </div>
         <!-- p7牌列表 -->
-        <div class="card-group card-group-p7" :style="{width:posState.p7.cards.length * 2 + 70 + 'px'}">
+        <div class="card-group card-group-p7" :style="{width:posState.p7.cards.length * 2 + 88 + 'px'}">
           <div @dragStart=" dragStart($event)" v-for="(card,index) in posState.p7.cards" class="card" :class="roomState.state === 3 ? 'card-' + card.value + '-' + card.type : 'card-unknow'"
             :style="{left:index * 2 + 'px'}">
           </div>
@@ -198,16 +185,98 @@
           </div>
           <div class="text-tips text-tips-left text-left" v-if="roomState.state < 3">剩余：{{posState.p7.cards.length}}张</div>
         </div>
+      </div>
 
-
-        
-        <!-- 底牌列表 -->
-        <!-- <div class="card-group card-group-top" :style="{width:posState.top.cards.length * 20 + 70 + 'px'}">
-          <div @dragStart="dragStart($event)" v-for="(card,index) in posState.top.cards" class="card" :style="{left:index * 20 + 'px'}"
-            :class="roomState.state >= 2 ? 'card-' + card.value + '-' + card.type : ' card-unknow' ">
-          </div>
-        </div> -->
-
+      <!-- 出牌区域 -->
+      <div class="screen-center">
+        <!-- 自己的p3出牌区域 -->
+        <div class="card-ctx card-ctx-p3" :style="{width:posState.p3.ctxCards.length * 20 + 70 + 'px'}">
+          <template v-if="roomState.state === 2">
+            <div v-if="!posState.p3.isPass" @dragStart="dragStart($event)" v-for="(card,index) in posState.p3.ctxCards"
+              class="card" :class="'card-' + card.value + '-' + card.type" :style="{left:index * 20 + 'px'}">
+            </div>
+            <div v-if="posState.p3.isPass" class="score-tipe">
+              不出
+            </div>
+          </template>
+        </div>
+        <!-- p0出牌区域 -->
+        <div class="card-ctx card-ctx-p0" :style="{width:posState.p0.ctxCards.length * 20 + 70 + 'px'}">
+          <template v-if="roomState.state === 2">
+            <div v-if="!posState.p0.isPass" @dragStart="dragStart($event)" v-for="(card,index) in posState.p0.ctxCards"
+              class="card" :class="'card-' + card.value + '-' + card.type" :style="{left:index * 20 + 'px'}">
+            </div>
+            <div v-if="posState.p0.isPass" class="score-tipe">
+              不出
+            </div>
+          </template>
+        </div>
+        <!-- p1出牌区域 -->
+        <div class="card-ctx card-ctx-p1" :style="{width:posState.p1.ctxCards.length * 20 + 70 + 'px'}">
+          <template v-if="roomState.state === 2">
+            <div v-if="!posState.p1.isPass" @dragStart="dragStart($event)" v-for="(card,index) in posState.p1.ctxCards"
+              class="card" :class="'card-' + card.value + '-' + card.type" :style="{left:index * 20 + 'px'}">
+            </div>
+            <div v-if="posState.p1.isPass" class="score-tipe">
+              不出
+            </div>
+          </template>
+        </div>
+        <!-- p2出牌区域 -->
+        <div class="card-ctx card-ctx-p2" :style="{width:posState.p2.ctxCards.length * 20 + 70 + 'px'}">
+          <template v-if="roomState.state === 2">
+            <div v-if="!posState.p2.isPass" @dragStart="dragStart($event)" v-for="(card,index) in posState.p2.ctxCards"
+              class="card" :class="'card-' + card.value + '-' + card.type" :style="{left:index * 20 + 'px'}">
+            </div>
+            <div v-if="posState.p2.isPass" class="score-tipe">
+              不出
+            </div>
+          </template>
+        </div>
+        <!-- p4出牌区域 -->
+        <div class="card-ctx card-ctx-p4" :style="{width:posState.p4.ctxCards.length * 20 + 70 + 'px'}">
+          <template v-if="roomState.state === 2">
+            <div v-if="!posState.p4.isPass" @dragStart="dragStart($event)" v-for="(card,index) in posState.p4.ctxCards"
+              class="card" :class="'card-' + card.value + '-' + card.type" :style="{left:index * 20 + 'px'}">
+            </div>
+            <div v-if="posState.p4.isPass" class="score-tipe">
+              不出
+            </div>
+          </template>
+        </div>
+        <!-- p5出牌区域 -->
+        <div class="card-ctx card-ctx-p5" :style="{width:posState.p5.ctxCards.length * 20 + 70 + 'px'}">
+          <template v-if="roomState.state === 2">
+            <div v-if="!posState.p5.isPass" @dragStart="dragStart($event)" v-for="(card,index) in posState.p5.ctxCards"
+              class="card" :class="'card-' + card.value + '-' + card.type" :style="{left:index * 20 + 'px'}">
+            </div>
+            <div v-if="posState.p5.isPass" class="score-tipe">
+              不出
+            </div>
+          </template>
+        </div>
+        <!-- p6出牌区域 -->
+        <div class="card-ctx card-ctx-p6" :style="{width:posState.p6.ctxCards.length * 20 + 70 + 'px'}">
+          <template v-if="roomState.state === 2">
+            <div v-if="!posState.p6.isPass" @dragStart="dragStart($event)" v-for="(card,index) in posState.p6.ctxCards"
+              class="card" :class="'card-' + card.value + '-' + card.type" :style="{left:index * 20 + 'px'}">
+            </div>
+            <div v-if="posState.p6.isPass" class="score-tipe">
+              不出
+            </div>
+          </template>
+        </div>
+        <!-- p7出牌区域 -->
+        <div class="card-ctx card-ctx-p7" :style="{width:posState.p7.ctxCards.length * 20 + 70 + 'px'}">
+          <template v-if="roomState.state === 2">
+            <div v-if="!posState.p7.isPass" @dragStart="dragStart($event)" v-for="(card,index) in posState.p7.ctxCards"
+              class="card" :class="'card-' + card.value + '-' + card.type" :style="{left:index * 20 + 'px'}">
+            </div>
+            <div v-if="posState.p7.isPass" class="score-tipe">
+              不出
+            </div>
+          </template>
+        </div>
       </div>
 
       <!-- <div class="msg-box">
@@ -227,8 +296,8 @@
           <option v-for="item in msgBox" :value="item">{{item}}</option>
         </select>
         <button class="msg-btn" @click="sendMessage(false)">发送</button>
-      </div>
-    </div> -->
+      </div> -->
+    </div>
 
   </div>
   <script src="/js/vue.min.js"></script>
@@ -419,13 +488,13 @@
             this.deskId = data.deskId;
             data.posInfos.forEach(function (pos) {
               this.updatePosStatus(pos.posId, pos.state, pos.userName);
-            }.bind(this))
-            this.posState.p3.isDizhu = false;
+            }.bind(this));
+            //this.posState.p3.isDizhu = false;
             //this.msgList = [];
-            this.$nextTick(function(){
-                console.log(this.$refs.msgSelect);
-                this.$refs.msgSelect.value = '';
-            });
+            // this.$nextTick(function(){
+            //     console.log(this.$refs.msgSelect);
+            //     this.$refs.msgSelect.value = '';
+            // });
             layer.closeAll();
           }.bind(this));
 
@@ -466,8 +535,6 @@
           }.bind(this));
 
           this.client.on('FORCE_EXIT_EV', function (data) {
-            layer.msg(data.msg);
-
             this.roomState.state = 3;
             this.posState.p1.callScore = -1;
             this.posState.p2.callScore = -1;
@@ -663,9 +730,9 @@
               name: name,
               content: data.msg
             })
-            this.$nextTick(function () {
-              this.$refs.msgBox.scrollTop = this.$refs.msgBox.scrollHeight;
-            });
+            // this.$nextTick(function () {
+            //   this.$refs.msgBox.scrollTop = this.$refs.msgBox.scrollHeight;
+            // });
           }.bind(this));
 
         }.bind(this));
@@ -950,7 +1017,7 @@
             var posId = cardGroup.id;
             var redirection = this.getDirectionByPosId(posId);
             this.posState[redirection].cards = cardGroup.cards;
-          }.bind(this));
+          }.bind(this))
         },
 
         sendMessage: function (e) {

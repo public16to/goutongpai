@@ -115,13 +115,23 @@ function Game() {
   this.userScore = {
     0: -1,
     1: -1,
-    2: -1
+    2: -1,
+    3: -1,
+    4: -1,
+    5: -1,
+    6: -1,
+    7: -1,
   }
-  // 每个位置出了几次牌 ，为了统计是否出现春天或反春
+  // 每个位置出了几次牌 
   this.sumCount = {
     0: 0,
     1: 0,
     2: 0,
+    3: 0,
+    4: 0,
+    5: 0,
+    6: 0,
+    7: 0,
   }
 
 }
@@ -141,7 +151,8 @@ Object.assign(
           maxIndex--;
         }
         group = group.sort(function (a, b) {
-          return a.value - b.value;
+          // 从大到小
+          return b.value-a.value ;
         });
         ret.push({ id: i, cards: group });
       }
@@ -293,19 +304,29 @@ Object.assign(
       this.userScore = {
         0: -1,
         1: -1,
-        2: -1
+        2: -1,
+        3: -1,
+        4: -1,
+        5: -1,
+        6: -1,
+        7: -1,
       }
       this.sumCount = {
         0: 0,
         1: 0,
         2: 0,
+        3: 0,
+        4: 0,
+        5: 0,
+        6: 0,
+        7: 0,
       }
       return this;
 
     },
     start() {
       this.status = 1;
-      this.contextPosId = getRandomNumForRange(2);
+      this.contextPosId = getRandomNumForRange(7);
       this.initCards();
       return this;
     },
@@ -358,7 +379,7 @@ Object.assign(
       return this.getCardsByPosId(3);
     },
     isGameOver() {
-      for (var i = 0; i < 3; i++) {
+      for (var i = 0; i < 8; i++) {
         if (!this.contextCards[i].cards.length) {
           return true;
         }
@@ -368,7 +389,7 @@ Object.assign(
     getResult() {
       const diZhuData = this.getMaxScoreInfo();
       const diZhuId = diZhuData.posId;
-      const posIds = [0, 1, 2];
+      const posIds = [0, 1, 2,3,4,5,6,7];
       var winnerId = '';
       var ret = {
         winner: [],
@@ -376,7 +397,7 @@ Object.assign(
         score: diZhuData.score,
         ratio: this.isSpring() ? ++this.ratio : this.ratio
       }
-      for (var i = 0; i < 3; i++) {
+      for (var i = 0; i < 8; i++) {
         if (!this.contextCards[i].cards.length) {
           winnerId = this.contextCards[i].id;
           break;
@@ -480,6 +501,5 @@ Object.assign(
   }
 
 )
-
 
 module.exports = Game;

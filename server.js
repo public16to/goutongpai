@@ -81,9 +81,11 @@ const proto = {
     let desk = this.getDesk(deskId);
     if (desk) {
       let positions = desk.positions;
-      return positions.filter(function (pos) {
-        return pos.posId !== posId;
-      })
+      return positions;
+      // 不需要过滤自己呀
+      // return positions.filter(function (pos) {
+      //   return pos.posId !== posId;
+      // })
     }
     return [];
   },
@@ -234,7 +236,7 @@ const proto = {
               item.positions.push(pos.posId)
             }
           });
-          if (n <= 2) {
+          if (n <= 7) {
             ret.push(item);
           }
         });
@@ -435,6 +437,11 @@ const proto = {
               this.updatePosStatus(deskId, 0, 1)
               this.updatePosStatus(deskId, 1, 1)
               this.updatePosStatus(deskId, 2, 1)
+              this.updatePosStatus(deskId, 3, 1)
+              this.updatePosStatus(deskId, 4, 1)
+              this.updatePosStatus(deskId, 5, 1)
+              this.updatePosStatus(deskId, 6, 1)
+              this.updatePosStatus(deskId, 7, 1)
               game.init();
             }
 
