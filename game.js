@@ -142,9 +142,21 @@ Object.assign(
       var ret = [];
       var mCards = originalCards.slice(0);
       var maxIndex = mCards.length - 1;
+      var c1 = getRandomNumForRange(1);
+      var c2 = getRandomNumForRange(1);
+      var c3 = getRandomNumForRange(1);
+      var c4 = getRandomNumForRange(1);
+      // 324张牌剩余4张牌，0,2随机多分一张，1和3随机分一张，4,6随机分一张，5,7随机分一张
+      var last4Card = [c1,c2,1-c1,1-c2,c3,c4,1-c3,1-c4];
       for (var i = 0; i < 8; i++) {
         var group = [];
         for (var j = 0; j < 40; j++) {
+          var offset = getRandomNumForRange(maxIndex);
+          group.push(mCards[offset]);
+          mCards.splice(offset, 1);
+          maxIndex--;
+        }
+        if(last4Card[i]===1){
           var offset = getRandomNumForRange(maxIndex);
           group.push(mCards[offset]);
           mCards.splice(offset, 1);
@@ -156,7 +168,7 @@ Object.assign(
         });
         ret.push({ id: i, cards: group });
       }
-      ret.push({ id: 8, cards: mCards });
+      // ret.push({ id: 8, cards: mCards });
       this.contextCards = ret;
       return ret;
     },
