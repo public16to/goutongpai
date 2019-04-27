@@ -6,6 +6,7 @@ function getRandomNumForRange(num) {
   return Math.round(Math.random() * num);
 }
 
+// 6个牌
 const originalCards = [
   { value: 3, type: 0 }, { value: 3, type: 1 }, { value: 3, type: 2 }, { value: 3, type: 3 },
   { value: 4, type: 0 }, { value: 4, type: 1 }, { value: 4, type: 2 }, { value: 4, type: 3 },
@@ -305,7 +306,7 @@ Object.assign(
       this.contextCards = [];
       this.contextScore = [1, 2, 3];
       this.status = 0; //0未开始 1叫分 2游戏中 3结束 4需要重发 5错误
-      this.ratio = 1;
+      this.ratio = 1;// 倍数
       this.lastCardInfo = {
         posId: '',
         len: 0,
@@ -387,8 +388,10 @@ Object.assign(
     getCalledScores() {
       return this.userScore;
     },
+    // 获取底牌
     getTopCards() {
-      return this.getCardsByPosId(3);
+      // return this.getCardsByPosId(3);
+      return [];
     },
     isGameOver() {
       for (var i = 0; i < 8; i++) {
@@ -459,6 +462,21 @@ Object.assign(
               this.contextPosId = 2;
             }
             if (posId == 2) {
+              this.contextPosId = 3;
+            }
+            if (posId == 3) {
+              this.contextPosId = 4;
+            }
+            if (posId == 4) {
+              this.contextPosId = 5;
+            }
+            if (posId == 5) {
+              this.contextPosId = 6;
+            }
+            if (posId == 6) {
+              this.contextPosId = 7;
+            }
+            if (posId == 7) {
               this.contextPosId = 0;
             }
 
@@ -482,6 +500,21 @@ Object.assign(
             this.contextPosId = 2;
           }
           if (posId == 2) {
+            this.contextPosId = 3;
+          }
+          if (posId == 3) {
+            this.contextPosId = 4;
+          }
+          if (posId == 4) {
+            this.contextPosId = 5;
+          }
+          if (posId == 5) {
+            this.contextPosId = 6;
+          }
+          if (posId == 6) {
+            this.contextPosId = 7;
+          }
+          if (posId == 7) {
             this.contextPosId = 0;
           }
 
