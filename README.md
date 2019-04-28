@@ -1,6 +1,17 @@
 # 华为沟通牌
 支持多人同时在线沟通牌
 
+### 目录结构
+
+|-static                            静态页面
+    |-index.html                    页面入口
+    |-js                            js文件
+    |-images                        图片文件
+    |-css                           样式文件
+|-core-validate.js                  出牌规则
+|-game.js                           游戏玩法
+|-server.js                         游戏服务端
+
 ### 启动项目
 ```sh
 npm start

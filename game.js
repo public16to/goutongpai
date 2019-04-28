@@ -6,7 +6,7 @@ function getRandomNumForRange(num) {
   return Math.round(Math.random() * num);
 }
 
-// 6个牌
+// 6个牌，14是A，15是小2，16是小王，17是大王
 const originalCards = [
   { value: 3, type: 0 }, { value: 3, type: 1 }, { value: 3, type: 2 }, { value: 3, type: 3 },
   { value: 4, type: 0 }, { value: 4, type: 1 }, { value: 4, type: 2 }, { value: 4, type: 3 },

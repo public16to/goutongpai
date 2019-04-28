@@ -1,11 +1,11 @@
-//数组排序
+// 数组排序
 function arraySort(array, asc) {
   return array.sort(function (a, b) {
     return asc === 'asc' ? a - b : b - a;
   })
 }
 
-//数组去重
+// 数组去重
 function arrayClearRepeat(array) {
   var ret = [];
   array.forEach(function (item) {
@@ -16,7 +16,7 @@ function arrayClearRepeat(array) {
   return ret;
 }
 
-//从一个数组中过滤掉 <= n 的成员
+// 从一个数组中过滤掉 <= n 的成员
 function removeItemLessOf(array, n) {
   return array.filter(function (item) {
     return item > n;
@@ -24,7 +24,7 @@ function removeItemLessOf(array, n) {
 }
 
 
-//筛选数组中累计出现过至少n次的成员
+// 筛选数组中累计出现过至少n次的成员
 function getCardByCountOverOf(array, n) {
   var ret = getGroupByCard(array);
   var r = [];
@@ -95,10 +95,10 @@ function KING(option, cards) {
   return cards.indexOf(16) > -1 && cards.indexOf(17) > - 1 ? [[16, 17]] : [];
 }
 
-// function AAAB(option, cards) {
-//   var cards_3 = getCardByCountOverOf(cards, 3);
-//   cards_3 = removeItemLessOf(cards_3, option.key)
-// }
+//  function AAAB(option, cards) {
+//    var cards_3 = getCardByCountOverOf(cards, 3);
+//    cards_3 = removeItemLessOf(cards_3, option.key)
+//  }
 
 var mapping = {
   A: [A, AAAA, KING],
