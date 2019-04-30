@@ -173,20 +173,23 @@ Object.assign(
       this.contextCards = ret;
       return ret;
     },
-    //验证牌型 posId座位号
+    //验证牌型,压牌规则, posId座位号
     validate(posId, cards) {
       var int_cards = cards.map(function (card) {
         return card.value;
       });
+      // 检查牌是否存在
       if (!this.checkExist(cards, posId)) {
         return { status: false };
       }
+      // 出牌是否符合规则，只能出1张，2张一样，3张一样，和炸弹
       var ret = validator(int_cards);
       if (!ret.status) {
         return {
           status: false
         }
       }
+      // 当前为出牌人
       if (this.lastCardInfo.posId === posId) {
         return {
           status: true,
@@ -196,22 +199,10 @@ Object.assign(
         }
       }
 
-      if (this.lastCardInfo.type === 'KING') {
-        return {
-          status: false,
-        }
-      }
+      
       for (let i = 0, len = ret.types.length; i < len; i++) {
         var type = ret.types[i].type;
         var key = ret.types[i].key;
-        if (type === 'KING') {
-          return {
-            status: true,
-            key,
-            type,
-            len: ret.len
-          }
-        }
 
         if (this.lastCardInfo.type === 'AAAA') {
           if (type === 'AAAA' && key > this.lastCardInfo.key) {
@@ -223,7 +214,8 @@ Object.assign(
             }
 
           }
-        } else {
+        } 
+        else {
           if (type === 'AAAA') {
             return {
               status: true,
@@ -231,7 +223,8 @@ Object.assign(
               type,
               len: ret.len
             }
-          } else {
+          } 
+          else {
             if (type === this.lastCardInfo.type && ret.len === this.lastCardInfo.len && key > this.lastCardInfo.key) {
               return {
                 status: true,
@@ -410,7 +403,7 @@ Object.assign(
         winner: [],
         loser: [],
         score: diZhuData.score,
-        ratio: this.isSpring() ? ++this.ratio : this.ratio
+        ratio: this.ratio
       }
       for (var i = 0; i < 8; i++) {
         if (!this.contextCards[i].cards.length) {
@@ -427,15 +420,6 @@ Object.assign(
         ret.loser.push(diZhuId);
       }
       return ret;
-    },
-    isSpring() {
-      const diZhuId = this.getMaxScoreInfo().posId;
-      const diZhuLen = this.getCardsByPosId(diZhuId).length;
-      const posIds = [0, 1, 2];
-      posIds.splice(posIds.indexOf(diZhuId), 1);
-      const playerLen1 = this.getCardsByPosId(posIds[0]).length;
-      const playerLen2 = this.getCardsByPosId(posIds[1]).length;
-      return (diZhuLen === 0 && playerLen1 === 17 && playerLen2 === 17) || (diZhuLen !== 0 && this.sumCount[diZhuId] === 1 && (playerLen1 === 0 || playerLen2 === 0))
     },
     next(posId, data) {
 
