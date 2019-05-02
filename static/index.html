@@ -515,7 +515,6 @@
           }.bind(this));
 
           this.client.on('STATUS_CHANGE', function (data) {
-            console.log(data);
             this.updateHouseStatus(data.deskId, data.posId, data.state,data.userName);
           }.bind(this));
 

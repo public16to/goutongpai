@@ -6,7 +6,7 @@ function getRandomNumForRange(num) {
   return Math.round(Math.random() * num);
 }
 
-// 6个牌，14是A，15是小2，16是小王，17是大王
+// 6个牌，14是A，15是小2，16是小王，17是大王，type0是红桃，type1是方块，type2是黑桃，type3是草花
 const originalCards = [
   { value: 3, type: 0 }, { value: 3, type: 1 }, { value: 3, type: 2 }, { value: 3, type: 3 },
   { value: 4, type: 0 }, { value: 4, type: 1 }, { value: 4, type: 2 }, { value: 4, type: 3 },
@@ -122,7 +122,7 @@ function Game() {
     5: -1,
     6: -1,
     7: -1,
-  }
+  };
   // 每个位置出了几次牌 
   this.sumCount = {
     0: 0,
@@ -133,7 +133,18 @@ function Game() {
     5: 0,
     6: 0,
     7: 0,
-  }
+  };
+  // 每个位置抓分
+  this.sumFeng = {
+    0: 0,
+    1: 0,
+    2: 0,
+    3: 0,
+    4: 0,
+    5: 0,
+    6: 0,
+    7: 0,
+  };
 
 }
 Object.assign(
@@ -151,9 +162,15 @@ Object.assign(
       var last4Card = [c1,c2,1-c1,1-c2,c3,c4,1-c3,1-c4];
       for (var i = 0; i < 8; i++) {
         var group = [];
+        // 红桃牌列表,红3到红k,大小王都算红桃
+        var htGroup= [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
         for (var j = 0; j < 40; j++) {
           var offset = getRandomNumForRange(maxIndex);
           group.push(mCards[offset]);
+          // 如果是红桃
+          if(mCards[offset].type===0){
+            htGroup[mCards[offset].value-3]++;
+          }
           mCards.splice(offset, 1);
           maxIndex--;
         }
@@ -167,7 +184,8 @@ Object.assign(
           // 从大到小
           return b.value-a.value ;
         });
-        ret.push({ id: i, cards: group });
+        console.log(htGroup);
+        ret.push({ id: i, cards: group,ht:htGroup });
       }
       // ret.push({ id: 8, cards: mCards });
       this.contextCards = ret;
@@ -182,7 +200,7 @@ Object.assign(
       if (!this.checkExist(cards, posId)) {
         return { status: false };
       }
-      // 出牌是否符合规则，只能出1张，2张一样，3张一样，和炸弹
+      // 出牌是否符合规则，只能出1张，2张，3张，炸弹
       var ret = validator(int_cards);
       if (!ret.status) {
         return {
@@ -199,39 +217,119 @@ Object.assign(
         }
       }
 
-      
       for (let i = 0, len = ret.types.length; i < len; i++) {
         var type = ret.types[i].type;
         var key = ret.types[i].key;
 
-        if (this.lastCardInfo.type === 'AAAA') {
-          if (type === 'AAAA' && key > this.lastCardInfo.key) {
+        // 3个王处理,2N-1，大于所有5个的炸弹
+        if(type=== "DKING3" || type ==="XKING3"){
+          if(this.lastCardInfo.len <= 5){
             return {
               status: true,
               key,
               type,
               len: ret.len
             }
-
           }
-        } 
-        else {
-          if (type === 'AAAA') {
+        }
+
+        // 4个王处理,2N-1，大于所有7个的炸弹
+        if(type=== "DKING4" || type ==="XKING4"){
+          if(this.lastCardInfo.len <= 7){
             return {
               status: true,
               key,
               type,
               len: ret.len
             }
-          } 
-          else {
-            if (type === this.lastCardInfo.type && ret.len === this.lastCardInfo.len && key > this.lastCardInfo.key) {
-              return {
-                status: true,
-                key,
-                type,
-                len: ret.len
-              }
+          }
+        }
+
+        // 5个王处理,2N-1，大于所有9个的炸弹
+        if(type=== "DKING5" || type ==="XKING5"){
+          if(this.lastCardInfo.len <= 9){
+            return {
+              status: true,
+              key,
+              type,
+              len: ret.len
+            }
+          }
+        }
+
+        // 6个王处理,2N-1，大于所有11个的炸弹
+        if(type=== "DKING6" || type ==="XKING6"){
+          if(this.lastCardInfo.len <= 11){
+            return {
+              status: true,
+              key,
+              type,
+              len: ret.len
+            }
+          }
+        }
+
+        // 同长度的牌型，出牌的key都要大于最后的牌
+        if (type === this.lastCardInfo.type && ret.len === this.lastCardInfo.len && key > this.lastCardInfo.key) {
+          return {
+            status: true,
+            key,
+            type,
+            len: ret.len
+          }
+        }
+
+        // 炸弹长度越长就越大(排除王炸)
+        if(ret.len > this.lastCardInfo.len && ret.len >=4 && this.lastCardInfo.len >=4 ){
+          return {
+            status: true,
+            key,
+            type,
+            len: ret.len
+          }
+        }
+
+        // 最后一个人出的是3王炸
+        if(this.lastCardInfo.type === "DKING3" || this.lastCardInfo.type==="XKING3"){
+          if(ret.len>5){
+            return {
+              status: true,
+              key,
+              type,
+              len: ret.len
+            }
+          }
+        }
+        // 最后一个人出的是4王炸
+        if(this.lastCardInfo.type === "DKING4" || this.lastCardInfo.type==="XKING4"){
+          if(ret.len>7){
+            return {
+              status: true,
+              key,
+              type,
+              len: ret.len
+            }
+          }
+        }
+        // 最后一个人出的是5王炸
+        if(this.lastCardInfo.type === "DKING5" || this.lastCardInfo.type==="XKING5"){
+          if(ret.len>9){
+            return {
+              status: true,
+              key,
+              type,
+              len: ret.len
+            }
+          }
+        }
+        // 最后一个人出的是6王炸
+        if(this.lastCardInfo.type === "DKING6" || this.lastCardInfo.type==="XKING6"){
+          if(ret.len>11){
+            return {
+              status: true,
+              key,
+              type,
+              len: ret.len
             }
           }
         }
@@ -316,7 +414,7 @@ Object.assign(
         5: -1,
         6: -1,
         7: -1,
-      }
+      };
       this.sumCount = {
         0: 0,
         1: 0,
@@ -326,9 +424,19 @@ Object.assign(
         5: 0,
         6: 0,
         7: 0,
-      }
+      };
+      // 每个位置抓分
+      this.sumFeng = {
+        0: 0,
+        1: 0,
+        2: 0,
+        3: 0,
+        4: 0,
+        5: 0,
+        6: 0,
+        7: 0,
+      };
       return this;
-
     },
     start() {
       this.status = 1;

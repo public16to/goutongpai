@@ -480,11 +480,11 @@ button {
     text-shadow: 3px 3px 3px #888;
     position: absolute;
     left: 50%;
-    bottom: 0;
     transform: translateX(-50%);
     text-align: center;
     display: inline-block;
     white-space: nowrap;
+    line-height:120px;
 }
 
 .clock {
@@ -551,39 +551,39 @@ button {
 }
 
 .card-ctx-p0 {
-    top: 120px;
-    left: 320px;
+    top: 220px;
+    left: 300px;
 }
 
 .card-ctx-p1 {
     top: 50%;
-    left: 320px;
+    left: 300px;
     margin-top: -60px;
 }
 
 .card-ctx-p2 {
-    bottom: 120px;
-    left: 320px;
+    bottom: 220px;
+    left: 300px;
 }
 
 .card-ctx-p4 {
-    bottom: 120px;
-    right: 320px;
+    bottom: 220px;
+    right: 300px;
 }
 
 .card-ctx-p5 {
     top: 50%;
     margin-top: -60px;
-    right: 320px;
+    right: 300px;
 }
 
 .card-ctx-p6 {
-    top: 120px;
+    top: 220px;
     right: 300px;
 }
 
 .card-ctx-p7 {
-    top: 300px;
+    top: 220px;
     left: 50%;
     z-index: 999;
     transform: translateX(-50%);
