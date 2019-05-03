@@ -45,8 +45,7 @@
       <div class="btn-group" v-if="roomState.state > 0 && roomState.state < 3 && roomState.ctxPos === 'p3'">
         <span class="clock">{{roomState.timeout}}</span>
         <template v-if="roomState.state === 1">
-          <button class="btn btn-call" v-for="score in roomState.ctxScore" @click="callScore(score)">{{score}}分</button>
-          <button class="btn btn-call" @click="callScore(0)">不叫</button>
+          <button class="btn btn-call" @click="callScore(3)">第一个出牌</button>
         </template>
         <template v-if="roomState.state === 2">
           <button class="btn" @click="playCards">出牌</button>

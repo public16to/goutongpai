@@ -203,7 +203,7 @@ const proto = {
     game.init();
     const cards = game.start().getCards();
     this.broadCastRoom('GAME_START', deskId, { cards });
-    this.broadCastRoom('CTX_USER_CHANGE', deskId, { ctxPos: game.getContextPosId(), ctxScore: game.getContextScore(), timeout: 15 });
+    this.broadCastRoom('CTX_USER_CHANGE', deskId, { ctxPos: game.getContextPosId(), ctxScore: game.getContextScore(), timeout: 45 });
   },
   init() {
     io.on('connection', socket => {
@@ -361,6 +361,7 @@ const proto = {
 
       });
 
+      // 叫分谁先出牌
       socket.on('CALL_SCORE', data => {
         const { score } = data;
         const client = this.getClient(socket);
@@ -377,12 +378,12 @@ const proto = {
           const ctxPos = game.getContextPosId();
           const ctxScore = game.getContextScore();
           const calledScores = game.getCalledScores();
-          this.broadCastRoom('CTX_USER_CHANGE', deskId, { ctxPos, ctxScore, calledScores, timeout: 15 });
+          this.broadCastRoom('CTX_USER_CHANGE', deskId, { ctxPos, ctxScore, calledScores, timeout: 45 });
         }
         if (status == 2) {
           const topCards = game.getTopCards();
           const dizhuPosId = game.getDiZhuPosId();
-          this.broadCastRoom('SHOW_TOP_CARD', deskId, { topCards, dizhuPosId, timeout: 15 });
+          this.broadCastRoom('SHOW_TOP_CARD', deskId, { topCards, dizhuPosId, timeout: 45 });
           this.broadCastRoom('CTX_PLAY_CHANGE', deskId, {
             ctxData: {
               len: 0,
@@ -428,7 +429,7 @@ const proto = {
                 posId
               },
               posId: game.getContextPosId(),
-              timeout: 15,
+              timeout: 45,
               isPass
             })
             socket.emit('PLAY_CARD_SUCCESS', data)

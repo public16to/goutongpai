@@ -440,9 +440,31 @@ Object.assign(
     },
     start() {
       this.status = 1;
-      this.contextPosId = getRandomNumForRange(7);
+      // 发牌
       this.initCards();
+      // 谁先出牌
+      this.whoFirst();
       return this;
+    },
+    whoFirst() {
+      const tmp = this.getCards();
+      let firstPosId = 0;
+      for (var i = 1; i < 8; i++) {
+        // 遍历所有的红桃
+        for(var j = 0; j < 15; j++){
+          if(tmp[i].ht[j] > tmp[firstPosId].ht[j]){
+            firstPosId = i;
+            break;
+          }
+          if(tmp[i].ht[j] === tmp[firstPosId].ht[j]){
+            continue;
+          }
+          break;
+        }
+      }
+      this.contextPosId =firstPosId;
+      // 谁先出，谁报的分就是最高的，暂时先这么处理
+      this.userScore[firstPosId]=3;
     },
     getStatus() {
       return this.status;
@@ -453,6 +475,7 @@ Object.assign(
     getContextScore() {
       return this.contextScore;
     },
+    // 检查所有人报分情况
     checkAllUserCalledScore() {
       var ret = true;
       for (var key in this.userScore) {
@@ -530,10 +553,10 @@ Object.assign(
       return ret;
     },
     next(posId, data) {
-
+      // console.log(data);
       if (posId == this.contextPosId) {
         if (this.status === 1) {
-          this.userScore[posId] = data;
+          // this.userScore[posId] = data;
           const maxScoreInfo = this.getMaxScoreInfo();
           if (this.checkAllUserCalledScore()) {
             if (maxScoreInfo.score > 0) {
@@ -584,7 +607,8 @@ Object.assign(
 
           }
 
-        } else if (this.status === 2) {
+        } 
+        else if (this.status === 2) {
           if (posId == 0) {
             this.contextPosId = 1;
           }
@@ -616,10 +640,6 @@ Object.assign(
             this.lastCardInfo.len = len
             this.lastCardInfo.key = key;
             this.lastCardInfo.posId = posId;
-
-            if (type === 'AAAA' || type === 'KING') {
-              this.ratio++;
-            }
             this.sumCount[posId]++;
           }
 
@@ -629,7 +649,9 @@ Object.assign(
             this.status = 3;
           }
         }
-      } else {
+      } 
+      
+      else {
         this.status = 5;
       }
       return this;
