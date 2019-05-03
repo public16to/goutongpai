@@ -361,7 +361,7 @@ const proto = {
 
       });
 
-      // 叫分谁先出牌
+      // 叫分谁先出牌，默认红桃最多的直接先出牌
       socket.on('CALL_SCORE', data => {
         const { score } = data;
         const client = this.getClient(socket);
@@ -393,7 +393,7 @@ const proto = {
               posId: dizhuPosId,
             },
             posId: dizhuPosId,
-            timeout: 30,
+            timeout: 45,
             isPass: false,
           })
         }
