@@ -329,7 +329,6 @@ const proto = {
         //通知当前玩家退出房间成功
         socket.emit('UNSITDOWN_SUCCESS', this.desks);
 
-
         //推送一条无关紧要的消息
         this.broadCastRoom('USER_MESSAGE', deskId, { type: 'SYS', posId, msg: `玩家[${this.getUserName(socket)}]退出房间`, id: guid(), time: time() })
       });
@@ -361,7 +360,7 @@ const proto = {
 
       });
 
-      // 叫分谁先出牌，默认红桃最多的直接先出牌
+      // 叫分谁先出牌，通知默认红桃最多的直接先出牌
       socket.on('CALL_SCORE', data => {
         const { score } = data;
         const client = this.getClient(socket);
@@ -406,7 +405,7 @@ const proto = {
         }
       });
 
-
+      // 开始玩牌
       socket.on('PLAY_CARD', data => {
         const client = this.getClient(socket);
         if (!client) {

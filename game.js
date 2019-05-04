@@ -104,8 +104,9 @@ const originalCards = [
 function Game() {
   this.contextCards = [];
   this.contextScore = [1, 2, 3];
-  this.status = 0; //0未开始 1叫分 2游戏中 3结束 4需要重发 5错误
-  this.ratio = 1;//分数翻倍数，
+  this.status = 0; // 0未开始 1叫分 2游戏中 3结束 4需要重发 5错误
+  this.ratio = 1;// 分数翻倍数
+  this.feng = 0;// 当前出分情况
   this.lastCardInfo = {
     posId: '',
     len: 0,
@@ -184,7 +185,7 @@ Object.assign(
           // 从大到小
           return b.value-a.value ;
         });
-        console.log(htGroup);
+        // console.log(htGroup);
         ret.push({ id: i, cards: group,ht:htGroup });
       }
       // ret.push({ id: 8, cards: mCards });
@@ -347,6 +348,23 @@ Object.assign(
       }
       return true;
     },
+    // 统计出牌的分数
+    sumCardsFeng(cards){
+      let tmp = 0;
+      for (var i = 0; i < cards.length; i++) {
+        if(cards[i].value===5){
+          tmp = tmp +5;
+        }
+        if(cards[i].value===10){
+          tmp = tmp +10;
+        }
+        if(cards[i].value===13){
+          tmp = tmp +10;
+        }
+      }
+      return tmp;
+    },
+    // 出牌后移除牌
     removeCards(cards, posId) {
       var sourceCards = this.getCardsByPosId(posId);
       for (var i = 0; i < cards.length; i++) {
@@ -357,6 +375,7 @@ Object.assign(
         }
       }
     },
+    // 返回每个位置的牌
     getCardsByPosId(posId) {
       for (var i = 0, len = this.contextCards.length; i < len; i++) {
         var item = this.contextCards[i];
@@ -398,6 +417,7 @@ Object.assign(
       this.contextScore = [1, 2, 3];
       this.status = 0; //0未开始 1叫分 2游戏中 3结束 4需要重发 5错误
       this.ratio = 1;// 倍数
+      this.feng = 0;// 当前出牌分数
       this.lastCardInfo = {
         posId: '',
         len: 0,
@@ -475,7 +495,7 @@ Object.assign(
     getContextScore() {
       return this.contextScore;
     },
-    // 检查所有人报分情况
+    // 检查所有人报分情况，没有用了
     checkAllUserCalledScore() {
       var ret = true;
       for (var key in this.userScore) {
@@ -517,14 +537,39 @@ Object.assign(
       // return this.getCardsByPosId(3);
       return [];
     },
+    // 游戏结束
     isGameOver() {
-      for (var i = 0; i < 8; i++) {
-        if (!this.contextCards[i].cards.length) {
-          return true;
+      // 0,2,4,6的牌都打完了，跑胜利
+      if (this.contextCards[0].cards.length===0 & this.contextCards[2].cards.length===0 & this.contextCards[4].cards.length===0 & this.contextCards[6].cards.length===0) {
+        return true;
+      }
+      // 1,3,5,7的牌都打完了，跑胜利
+      if (this.contextCards[1].cards.length===0 & this.contextCards[3].cards.length===0 & this.contextCards[5].cards.length===0 & this.contextCards[7].cards.length===0) {
+        return true;
+      }
+      // 0,2,4,6打完牌的人分数合到300分，得分胜利
+      // 1,3,5,7打完牌的人分数合到300分，得分胜利
+      let shuangSum = 0;
+      let danSum = 0;
+      for (let i = 0; i < 8; i++) {
+        if(i%2===0){
+          if(this.contextCards[i].cards.length===0){
+            shuangSum = shuangSum +this.sumFeng[i];
+          }
+        }
+        if(i%2!==0){
+          if(this.contextCards[i].cards.length===0){
+            danSum = danSum +this.sumFeng[i];
+          }
         }
       }
+      if(shuangSum>=300 || danSum>=300){
+        return true;
+      }
+
       return false;
     },
+    // 获取结果
     getResult() {
       const diZhuData = this.getMaxScoreInfo();
       const diZhuId = diZhuData.posId;
@@ -553,6 +598,7 @@ Object.assign(
       return ret;
     },
     next(posId, data) {
+      // data出牌的内容
       // console.log(data);
       if (posId == this.contextPosId) {
         if (this.status === 1) {
@@ -565,11 +611,12 @@ Object.assign(
               this.lastCardInfo.posId = this.contextPosId;
               this.mergeCardsByPosId(this.contextPosId);
             } else {
-              //需要重新发牌
+              //需要重新发牌，也不存在了
               this.status = 4;
             }
 
-          } else {
+          } 
+          else {
             if (posId == 0) {
               this.contextPosId = 1;
             }
@@ -633,7 +680,8 @@ Object.assign(
           if (posId == 7) {
             this.contextPosId = 0;
           }
-
+          console.log(posId);
+          console.log(data);
           const { type, len, key, status } = this.validate(posId, data);
           if (status) {
             this.lastCardInfo.type = type
@@ -642,9 +690,9 @@ Object.assign(
             this.lastCardInfo.posId = posId;
             this.sumCount[posId]++;
           }
-
-
+          this.feng =this.feng + this.sumCardsFeng(data);
           this.removeCards(data, posId);
+          console.log(this.feng);
           if (this.isGameOver()) {
             this.status = 3;
           }
