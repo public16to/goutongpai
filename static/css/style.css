@@ -375,14 +375,12 @@
 }
 
 .btn-exit-room {
-    
+    background-color: darkorange;
 }
 
 .btn-prepare {
-
+    background-color: #00BCD4;
 }
-
-
 
 .card-group {
     position: fixed;
@@ -763,10 +761,12 @@ margin-bottom: 5px;
 }
 .scroll-bar::-webkit-scrollbar-thumb {
     border-radius: 10px;
-        -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
-        background: rgba(0, 0, 0, 0.1);
+    -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+    background: rgba(0, 0, 0, 0.1);
 }
 .scroll-bar::-webkit-scrollbar-track {
     -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
     border-radius: 10px;
 }

@@ -106,7 +106,7 @@ function Game() {
   this.contextScore = [1, 2, 3];
   this.status = 0; // 0未开始 1叫分 2游戏中 3结束 4需要重发 5错误
   this.ratio = 1;// 分数翻倍数
-  this.feng = 0;// 当前出分情况
+  this.tmpFeng = 0;// 当前这一轮出分情况
   this.lastCardInfo = {
     posId: '',
     len: 0,
@@ -182,8 +182,8 @@ Object.assign(
           maxIndex--;
         }
         group = group.sort(function (a, b) {
-          // 从大到小
-          return b.value-a.value ;
+          // 从小到大
+          return a.value-b.value ;
         });
         // console.log(htGroup);
         ret.push({ id: i, cards: group,ht:htGroup });
@@ -270,26 +270,6 @@ Object.assign(
           }
         }
 
-        // 同长度的牌型，出牌的key都要大于最后的牌
-        if (type === this.lastCardInfo.type && ret.len === this.lastCardInfo.len && key > this.lastCardInfo.key) {
-          return {
-            status: true,
-            key,
-            type,
-            len: ret.len
-          }
-        }
-
-        // 炸弹长度越长就越大(排除王炸)
-        if(ret.len > this.lastCardInfo.len && ret.len >=4 && this.lastCardInfo.len >=4 ){
-          return {
-            status: true,
-            key,
-            type,
-            len: ret.len
-          }
-        }
-
         // 最后一个人出的是3王炸
         if(this.lastCardInfo.type === "DKING3" || this.lastCardInfo.type==="XKING3"){
           if(ret.len>5){
@@ -334,6 +314,27 @@ Object.assign(
             }
           }
         }
+
+        // 炸弹长度越长就越大(排除王炸)
+        if(ret.len > this.lastCardInfo.len && ret.len >=4 && key!==16 && key!=17){
+          return {
+            status: true,
+            key,
+            type,
+            len: ret.len
+          }
+        }
+
+        // 同长度的牌型，出牌的key都要大于最后的牌
+        if (type === this.lastCardInfo.type && ret.len === this.lastCardInfo.len && key > this.lastCardInfo.key) {
+          return {
+            status: true,
+            key,
+            type,
+            len: ret.len
+          }
+        }
+
       }
       return { status: false }
     },
@@ -387,6 +388,9 @@ Object.assign(
     },
     getCardIndexByPosId(card, posId) {
       var cards = this.getCardsByPosId(posId);
+      if(cards===null){
+        return -1;
+      }
       for (var i = 0, len = cards.length; i < len; i++) {
         var curr = cards[i];
         if (curr.value === card.value && curr.type === card.type) {
@@ -394,11 +398,6 @@ Object.assign(
         }
       }
       return -1;
-    },
-    mergeCardsByPosId(posId) {
-      const cards = this.getCardsByPosId(posId);
-      const topCards = this.getCardsByPosId(3);
-      cards.push(...topCards);
     },
     getCardIndexByCards(card, cards) {
       for (var i = 0, len = cards.length; i < len; i++) {
@@ -417,7 +416,7 @@ Object.assign(
       this.contextScore = [1, 2, 3];
       this.status = 0; //0未开始 1叫分 2游戏中 3结束 4需要重发 5错误
       this.ratio = 1;// 倍数
-      this.feng = 0;// 当前出牌分数
+      this.tmpFeng = 0;// 当前出牌分数
       this.lastCardInfo = {
         posId: '',
         len: 0,
@@ -435,6 +434,7 @@ Object.assign(
         6: -1,
         7: -1,
       };
+      // 每个位置出了几次牌
       this.sumCount = {
         0: 0,
         1: 0,
@@ -470,7 +470,7 @@ Object.assign(
       const tmp = this.getCards();
       let firstPosId = 0;
       for (var i = 1; i < 8; i++) {
-        // 遍历所有的红桃
+        // 遍历所有的红桃，红桃3，红桃4
         for(var j = 0; j < 15; j++){
           if(tmp[i].ht[j] > tmp[firstPosId].ht[j]){
             firstPosId = i;
@@ -495,21 +495,6 @@ Object.assign(
     getContextScore() {
       return this.contextScore;
     },
-    // 检查所有人报分情况，没有用了
-    checkAllUserCalledScore() {
-      var ret = true;
-      for (var key in this.userScore) {
-        if (this.userScore.hasOwnProperty(key)) {
-          if (this.userScore[key] < 0) {
-            ret = false;
-          }
-          if (this.userScore[key] === 3) {
-            return true;
-          }
-        }
-      }
-      return ret;
-    },
     getMaxScoreInfo() {
       let score = 0;
       let posId = 0;
@@ -532,10 +517,18 @@ Object.assign(
     getCalledScores() {
       return this.userScore;
     },
-    // 获取底牌
+    // 获取底牌，没有底牌
     getTopCards() {
-      // return this.getCardsByPosId(3);
       return [];
+    },
+    // 判断下个人轮到谁，因为存在出完牌的情况
+    getNextPosId(posId){
+      for (let i = 0; i < 7; i++){
+        let nextId = (posId+1+i)%8;
+        if(this.getCardsByPosId(nextId)!==null){
+          return nextId;
+        }
+      }
     },
     // 游戏结束
     isGameOver() {
@@ -604,84 +597,22 @@ Object.assign(
         if (this.status === 1) {
           // this.userScore[posId] = data;
           const maxScoreInfo = this.getMaxScoreInfo();
-          if (this.checkAllUserCalledScore()) {
-            if (maxScoreInfo.score > 0) {
-              this.status = 2;
-              this.contextPosId = Number(maxScoreInfo.posId);
-              this.lastCardInfo.posId = this.contextPosId;
-              this.mergeCardsByPosId(this.contextPosId);
-            } else {
-              //需要重新发牌，也不存在了
-              this.status = 4;
-            }
-
-          } 
-          else {
-            if (posId == 0) {
-              this.contextPosId = 1;
-            }
-            if (posId == 1) {
-              this.contextPosId = 2;
-            }
-            if (posId == 2) {
-              this.contextPosId = 3;
-            }
-            if (posId == 3) {
-              this.contextPosId = 4;
-            }
-            if (posId == 4) {
-              this.contextPosId = 5;
-            }
-            if (posId == 5) {
-              this.contextPosId = 6;
-            }
-            if (posId == 6) {
-              this.contextPosId = 7;
-            }
-            if (posId == 7) {
-              this.contextPosId = 0;
-            }
-
-            if (maxScoreInfo.score < 1) {
-              this.contextScore = [1, 2, 3];
-            } else if (maxScoreInfo.score == 1) {
-              this.contextScore = [2, 3];
-            } else if (maxScoreInfo.score == 2) {
-              this.contextScore = [3];
-            } else {
-              this.contextScore = [];
-            }
-
+          if (maxScoreInfo.score > 0) {
+            this.status = 2;
+            this.contextPosId = Number(maxScoreInfo.posId);
+            this.lastCardInfo.posId = this.contextPosId;
+          } else {
+            //需要重新发牌，找不到先出牌的人
+            this.status = 4;
           }
-
         } 
         else if (this.status === 2) {
-          if (posId == 0) {
-            this.contextPosId = 1;
-          }
-          if (posId == 1) {
-            this.contextPosId = 2;
-          }
-          if (posId == 2) {
-            this.contextPosId = 3;
-          }
-          if (posId == 3) {
-            this.contextPosId = 4;
-          }
-          if (posId == 4) {
-            this.contextPosId = 5;
-          }
-          if (posId == 5) {
-            this.contextPosId = 6;
-          }
-          if (posId == 6) {
-            this.contextPosId = 7;
-          }
-          if (posId == 7) {
-            this.contextPosId = 0;
-          }
+          // 获取下一个出牌的人
+          this.contextPosId = this.getNextPosId(posId);
+          console.log("下一个出牌的人"+this.contextPosId);
           console.log(posId);
           console.log(data);
+
           const { type, len, key, status } = this.validate(posId, data);
           if (status) {
             this.lastCardInfo.type = type
@@ -690,9 +621,16 @@ Object.assign(
             this.lastCardInfo.posId = posId;
             this.sumCount[posId]++;
           }
-          this.feng =this.feng + this.sumCardsFeng(data);
+          this.tmpFeng =this.tmpFeng + this.sumCardsFeng(data);
+          // 最后出牌的位置，又是当前位置，说明赢了一圈，将分数加给这个位置
+          if(this.lastCardInfo.posId===this.contextPosId){
+            console.log(this.lastCardInfo.posId+"胜利了一圈");
+            this.sumFeng[this.lastCardInfo.posId]+=this.tmpFeng;
+            this.tmpFeng = 0;
+          }
           this.removeCards(data, posId);
-          console.log(this.feng);
+          console.log(this.sumFeng);
+          console.log(this.tmpFeng);
           if (this.isGameOver()) {
             this.status = 3;
           }
@@ -700,6 +638,7 @@ Object.assign(
       } 
       
       else {
+        console.log("999999999");
         this.status = 5;
       }
       return this;
