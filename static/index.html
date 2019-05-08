@@ -60,6 +60,13 @@
         <button v-if="posState.p3.state < 2" @click="prepare" class="btn-prepare" autofocus>准备</button>
       </div>
 
+      <!-- 记分区 -->
+      <div class="feng-system">
+        <p v-if="posState.p3.state >= 2">{{posState.p0.name}}、{{posState.p2.name}}、{{posState.p4.name}}、{{posState.p6.name}}总得分：{{posState.p0.sumFeng+posState.p2.sumFeng+posState.p4.sumFeng+posState.p6.sumFeng}}</p>
+        <p v-if="posState.p3.state >= 2">{{posState.p1.name}}、{{posState.p3.name}}、{{posState.p5.name}}、{{posState.p7.name}}总得分：{{posState.p1.sumFeng+posState.p3.sumFeng+posState.p5.sumFeng+posState.p7.sumFeng}}</p>
+        <p v-if="posState.p3.state >= 2">本轮分数：{{roomState.tmpFeng}}</button>
+      </div>
+
       <!-- 玩家头像 -->
       <div class="players">
         <div class="screen-center">
@@ -110,14 +117,14 @@
       <div class="card-groups" v-if="roomState.state">
         <!-- 自己的牌列表 -->
         <div class="card-group card-group-p3" :style="{width:posState.p3.cards.length * 20 + 70 + 'px'}" v-if="!(roomState.state === 3 && posState.p3.state === 2)">
-          <div @dragStart="dragStart($event)" @click="selectCard(card)" v-for="(card,index) in posState.p3.cards"
+          <div @dragstart="onDragstart($event)" draggable="true" @dragenter="onDragenter($event)"  @click="selectCard(card)" v-for="(card,index) in posState.p3.cards"
             class="card" :class="'card-' + card.value + '-' + card.type" :style="{left:index * 20 + 'px',top:card.selected ? '-20px' : 0}">
           </div>
           <div class="text-tips text-tips-left text-left" v-if="roomState.state < 3">剩余：{{posState.p3.cards.length}}张 得分：{{posState.p3.sumFeng}}</div>
         </div>
         <!-- p0牌列表 -->
         <div class="card-group card-group-p0" :style="{width:posState.p0.cards.length * 2 + 88 + 'px'}">
-          <div @dragStart=" dragStart($event)" v-for="(card,index) in posState.p0.cards" class="card" :class="roomState.state === 3 ? 'card-' + card.value + '-' + card.type : 'card-unknow'"
+          <div v-for="(card,index) in posState.p0.cards" class="card" :class="roomState.state === 3 ? 'card-' + card.value + '-' + card.type : 'card-unknow'"
             :style="{left:index * 2 + 'px'}">
           </div>
           <div class="icon-group icon-group-left text-left" v-if="roomState.ctxPos == 'p0' && roomState.state < 3">
@@ -127,7 +134,7 @@
         </div>
         <!-- p1牌列表 -->
         <div class="card-group card-group-p1" :style="{width:posState.p1.cards.length * 2 + 88 + 'px'}">
-          <div @dragStart=" dragStart($event)" v-for="(card,index) in posState.p1.cards" class="card" :class="roomState.state === 3 ? 'card-' + card.value + '-' + card.type : 'card-unknow'"
+          <div v-for="(card,index) in posState.p1.cards" class="card" :class="roomState.state === 3 ? 'card-' + card.value + '-' + card.type : 'card-unknow'"
             :style="{left:index * 2 + 'px'}">
           </div>
           <div class="icon-group icon-group-left text-left" v-if="roomState.ctxPos == 'p1' && roomState.state < 3">
@@ -137,7 +144,7 @@
         </div>
         <!-- p2牌列表 -->
         <div class="card-group card-group-p2" :style="{width:posState.p2.cards.length * 2 + 88 + 'px'}">
-          <div @dragStart=" dragStart($event)" v-for="(card,index) in posState.p2.cards" class="card" :class="roomState.state === 3 ? 'card-' + card.value + '-' + card.type : 'card-unknow'"
+          <div v-for="(card,index) in posState.p2.cards" class="card" :class="roomState.state === 3 ? 'card-' + card.value + '-' + card.type : 'card-unknow'"
             :style="{left:index * 2 + 'px'}">
           </div>
           <div class="icon-group icon-group-left text-left" v-if="roomState.ctxPos == 'p2' && roomState.state < 3">
@@ -147,7 +154,7 @@
         </div>
         <!-- p4牌列表 -->
         <div class="card-group card-group-p4" :style="{width:posState.p4.cards.length * 2 + 88 + 'px'}">
-          <div @dragStart=" dragStart($event)" v-for="(card,index) in posState.p4.cards" class="card" :class="roomState.state === 3 ? 'card-' + card.value + '-' + card.type : 'card-unknow'"
+          <div v-for="(card,index) in posState.p4.cards" class="card" :class="roomState.state === 3 ? 'card-' + card.value + '-' + card.type : 'card-unknow'"
             :style="{left:index * 2 + 'px'}">
           </div>
           <div class="icon-group icon-group-left text-left" v-if="roomState.ctxPos == 'p4' && roomState.state < 3">
@@ -157,7 +164,7 @@
         </div>
         <!-- p5牌列表 -->
         <div class="card-group card-group-p5" :style="{width:posState.p5.cards.length * 2 + 88 + 'px'}">
-          <div @dragStart=" dragStart($event)" v-for="(card,index) in posState.p5.cards" class="card" :class="roomState.state === 3 ? 'card-' + card.value + '-' + card.type : 'card-unknow'"
+          <div v-for="(card,index) in posState.p5.cards" class="card" :class="roomState.state === 3 ? 'card-' + card.value + '-' + card.type : 'card-unknow'"
             :style="{left:index * 2 + 'px'}">
           </div>
           <div class="icon-group icon-group-left text-left" v-if="roomState.ctxPos == 'p5' && roomState.state < 3">
@@ -167,7 +174,7 @@
         </div>
         <!-- p6牌列表 -->
         <div class="card-group card-group-p6" :style="{width:posState.p6.cards.length * 2 + 88 + 'px'}">
-          <div @dragStart=" dragStart($event)" v-for="(card,index) in posState.p6.cards" class="card" :class="roomState.state === 3 ? 'card-' + card.value + '-' + card.type : 'card-unknow'"
+          <div v-for="(card,index) in posState.p6.cards" class="card" :class="roomState.state === 3 ? 'card-' + card.value + '-' + card.type : 'card-unknow'"
             :style="{left:index * 2 + 'px'}">
           </div>
           <div class="icon-group icon-group-left text-left" v-if="roomState.ctxPos == 'p6' && roomState.state < 3">
@@ -177,7 +184,7 @@
         </div>
         <!-- p7牌列表 -->
         <div class="card-group card-group-p7" :style="{width:posState.p7.cards.length * 2 + 88 + 'px'}">
-          <div @dragStart=" dragStart($event)" v-for="(card,index) in posState.p7.cards" class="card" :class="roomState.state === 3 ? 'card-' + card.value + '-' + card.type : 'card-unknow'"
+          <div v-for="(card,index) in posState.p7.cards" class="card" :class="roomState.state === 3 ? 'card-' + card.value + '-' + card.type : 'card-unknow'"
             :style="{left:index * 2 + 'px'}">
           </div>
           <div class="icon-group icon-group-left text-left" v-if="roomState.ctxPos == 'p7' && roomState.state < 3">
@@ -192,7 +199,7 @@
         <!-- 自己的p3出牌区域 -->
         <div class="card-ctx card-ctx-p3" :style="{width:posState.p3.ctxCards.length * 20 + 70 + 'px'}">
           <template v-if="roomState.state === 2">
-            <div v-if="!posState.p3.isPass" @dragStart="dragStart($event)" v-for="(card,index) in posState.p3.ctxCards"
+            <div v-if="!posState.p3.isPass" v-for="(card,index) in posState.p3.ctxCards"
               class="card" :class="'card-' + card.value + '-' + card.type" :style="{left:index * 20 + 'px'}">
             </div>
             <div v-if="posState.p3.isPass" class="score-tipe">
@@ -203,7 +210,7 @@
         <!-- p0出牌区域 -->
         <div class="card-ctx card-ctx-p0" :style="{width:posState.p0.ctxCards.length * 20 + 70 + 'px'}">
           <template v-if="roomState.state === 2">
-            <div v-if="!posState.p0.isPass" @dragStart="dragStart($event)" v-for="(card,index) in posState.p0.ctxCards"
+            <div v-if="!posState.p0.isPass" v-for="(card,index) in posState.p0.ctxCards"
               class="card" :class="'card-' + card.value + '-' + card.type" :style="{left:index * 20 + 'px'}">
             </div>
             <div v-if="posState.p0.isPass" class="score-tipe">
@@ -214,7 +221,7 @@
         <!-- p1出牌区域 -->
         <div class="card-ctx card-ctx-p1" :style="{width:posState.p1.ctxCards.length * 20 + 70 + 'px'}">
           <template v-if="roomState.state === 2">
-            <div v-if="!posState.p1.isPass" @dragStart="dragStart($event)" v-for="(card,index) in posState.p1.ctxCards"
+            <div v-if="!posState.p1.isPass" v-for="(card,index) in posState.p1.ctxCards"
               class="card" :class="'card-' + card.value + '-' + card.type" :style="{left:index * 20 + 'px'}">
             </div>
             <div v-if="posState.p1.isPass" class="score-tipe">
@@ -225,7 +232,7 @@
         <!-- p2出牌区域 -->
         <div class="card-ctx card-ctx-p2" :style="{width:posState.p2.ctxCards.length * 20 + 70 + 'px'}">
           <template v-if="roomState.state === 2">
-            <div v-if="!posState.p2.isPass" @dragStart="dragStart($event)" v-for="(card,index) in posState.p2.ctxCards"
+            <div v-if="!posState.p2.isPass" v-for="(card,index) in posState.p2.ctxCards"
               class="card" :class="'card-' + card.value + '-' + card.type" :style="{left:index * 20 + 'px'}">
             </div>
             <div v-if="posState.p2.isPass" class="score-tipe">
@@ -236,7 +243,7 @@
         <!-- p4出牌区域 -->
         <div class="card-ctx card-ctx-p4" :style="{width:posState.p4.ctxCards.length * 20 + 70 + 'px'}">
           <template v-if="roomState.state === 2">
-            <div v-if="!posState.p4.isPass" @dragStart="dragStart($event)" v-for="(card,index) in posState.p4.ctxCards"
+            <div v-if="!posState.p4.isPass" v-for="(card,index) in posState.p4.ctxCards"
               class="card" :class="'card-' + card.value + '-' + card.type" :style="{left:index * 20 + 'px'}">
             </div>
             <div v-if="posState.p4.isPass" class="score-tipe">
@@ -247,7 +254,7 @@
         <!-- p5出牌区域 -->
         <div class="card-ctx card-ctx-p5" :style="{width:posState.p5.ctxCards.length * 20 + 70 + 'px'}">
           <template v-if="roomState.state === 2">
-            <div v-if="!posState.p5.isPass" @dragStart="dragStart($event)" v-for="(card,index) in posState.p5.ctxCards"
+            <div v-if="!posState.p5.isPass" v-for="(card,index) in posState.p5.ctxCards"
               class="card" :class="'card-' + card.value + '-' + card.type" :style="{left:index * 20 + 'px'}">
             </div>
             <div v-if="posState.p5.isPass" class="score-tipe">
@@ -258,7 +265,7 @@
         <!-- p6出牌区域 -->
         <div class="card-ctx card-ctx-p6" :style="{width:posState.p6.ctxCards.length * 20 + 70 + 'px'}">
           <template v-if="roomState.state === 2">
-            <div v-if="!posState.p6.isPass" @dragStart="dragStart($event)" v-for="(card,index) in posState.p6.ctxCards"
+            <div v-if="!posState.p6.isPass" v-for="(card,index) in posState.p6.ctxCards"
               class="card" :class="'card-' + card.value + '-' + card.type" :style="{left:index * 20 + 'px'}">
             </div>
             <div v-if="posState.p6.isPass" class="score-tipe">
@@ -269,7 +276,7 @@
         <!-- p7出牌区域 -->
         <div class="card-ctx card-ctx-p7" :style="{width:posState.p7.ctxCards.length * 20 + 70 + 'px'}">
           <template v-if="roomState.state === 2">
-            <div v-if="!posState.p7.isPass" @dragStart="dragStart($event)" v-for="(card,index) in posState.p7.ctxCards"
+            <div v-if="!posState.p7.isPass" v-for="(card,index) in posState.p7.ctxCards"
               class="card" :class="'card-' + card.value + '-' + card.type" :style="{left:index * 20 + 'px'}">
             </div>
             <div v-if="posState.p7.isPass" class="score-tipe">
@@ -345,6 +352,7 @@
               type: '',
               ctxPos: ''
             },
+            tmpFeng:0,
             ctxScore: [],
             timeout: 15,
 
@@ -361,7 +369,8 @@
               isPass: false,
               isDizhu: false,
               callScore: -1,
-              name: '游客'
+              name: '游客',
+              sumFeng:0,
             },
             p1:{
               state: 0,//0没人，1未准备 2准备
@@ -370,7 +379,8 @@
               isPass: false,
               isDizhu: false,
               callScore: -1,
-              name: '游客'
+              name: '游客',
+              sumFeng:0,
             },
             p2:{
               state: 0,//0没人，1未准备 2准备
@@ -379,7 +389,8 @@
               isPass: false,
               isDizhu: false,
               callScore: -1,
-              name: '游客'
+              name: '游客',
+              sumFeng:0,
             },
             p3:{
               state: 0,//0没人，1未准备 2准备
@@ -388,7 +399,8 @@
               isPass: false,
               isDizhu: false,
               callScore: -1,
-              name: '游客'
+              name: '游客',
+              sumFeng:0,
             },
             p4:{
               state: 0,//0没人，1未准备 2准备
@@ -397,7 +409,8 @@
               isPass: false,
               isDizhu: false,
               callScore: -1,
-              name: '游客'
+              name: '游客',
+              sumFeng:0,
             },
             p5:{
               state: 0,//0没人，1未准备 2准备
@@ -406,7 +419,8 @@
               isPass: false,
               isDizhu: false,
               callScore: -1,
-              name: '游客'
+              name: '游客',
+              sumFeng:0,
             },
             p6:{
               state: 0,//0没人，1未准备 2准备
@@ -415,7 +429,8 @@
               isPass: false,
               isDizhu: false,
               callScore: -1,
-              name: '游客'
+              name: '游客',
+              sumFeng:0,
             },
             p7:{
               state: 0,//0没人，1未准备 2准备
@@ -424,35 +439,9 @@
               isPass: false,
               isDizhu: false,
               callScore: -1,
-              name: '游客'
+              name: '游客',
+              sumFeng:0,
             },
-            // left: {
-            //   state: 0,//0没人，1未准备 2准备
-            //   cards: [],
-            //   ctxCards: [],
-            //   isPass: false,
-            //   isDizhu: false,
-            //   callScore: -1,
-            //   name: '游客'
-            // },
-            // right: {
-            //   state: 0,//0没人，1未准备 2准备
-            //   cards: [],
-            //   ctxCards: [],
-            //   isPass: false,
-            //   isDizhu: false,
-            //   callScore: -1,
-            //   name: '游客'
-            // },
-            // self: {
-            //   state: 0,//0没人，1未准备 2准备
-            //   cards: [],
-            //   ctxCards: [],
-            //   isPass: false,
-            //   isDizhu: false,
-            //   callScore: -1,
-            //   name: ''
-            // }
           }
         }
       },
@@ -535,6 +524,7 @@
 
           this.client.on('FORCE_EXIT_EV', function (data) {
             this.roomState.state = 3;
+            this.posState.p0.callScore = -1;
             this.posState.p1.callScore = -1;
             this.posState.p2.callScore = -1;
             this.posState.p4.callScore = -1;
@@ -561,6 +551,7 @@
             // 初始化数据
             this.roomState.state = 1;
             this.initCards(data.cards);
+            this.posState.p0.callScore = -1;
             this.posState.p1.callScore = -1;
             this.posState.p2.callScore = -1;
             this.posState.p4.callScore = -1;
@@ -569,6 +560,7 @@
             this.posState.p7.callScore = -1;
             this.posState.p3.callScore = -1;
 
+            this.posState.p0.isPass = false;
             this.posState.p1.isPass = false;
             this.posState.p2.isPass = false;
             this.posState.p4.isPass = false;
@@ -577,6 +569,7 @@
             this.posState.p7.isPass = false;
             this.posState.p3.isPass = false;
 
+            this.posState.p0.isDizhu = false;
             this.posState.p1.isDizhu = false;
             this.posState.p2.isDizhu = false;
             this.posState.p4.isDizhu = false;
@@ -585,6 +578,7 @@
             this.posState.p7.isDizhu = false;
             this.posState.p3.isDizhu = false;
 
+            this.posState.p0.ctxCards = [];
             this.posState.p1.ctxCards = [];
             this.posState.p2.ctxCards = [];
             this.posState.p4.ctxCards = [];
@@ -592,6 +586,17 @@
             this.posState.p6.ctxCards = [];
             this.posState.p7.ctxCards = [];
             this.posState.p3.ctxCards = [];
+
+            this.posState.p0.sumFeng = 0;
+            this.posState.p1.sumFeng = 0;
+            this.posState.p2.sumFeng = 0;
+            this.posState.p4.sumFeng = 0;
+            this.posState.p5.sumFeng = 0;
+            this.posState.p6.sumFeng = 0;
+            this.posState.p7.sumFeng = 0;
+            this.posState.p3.sumFeng = 0;
+
+            this.roomState.tmpFeng = 0;
 
           }.bind(this));
 
@@ -626,6 +631,11 @@
             var direct = this.getDirectionByPosId(data.ctxData.posId);
             this.posState[direct].ctxCards = data.ctxData.cards;
             this.posState[direct].isPass = data.isPass;
+            for(var i=0;i<8;i++){
+              var tmpDirect = this.getDirectionByPosId(i);
+              this.posState[tmpDirect].sumFeng = data.sumFeng[i];
+            }
+            this.roomState.tmpFeng = data.tmpFeng;
             if (!data.isPass) {
               this.roomState.ctxCard.len = data.ctxData.len;
               this.roomState.ctxCard.key = data.ctxData.key;
@@ -1002,8 +1012,17 @@
           layer.load({ type: 3 });
           this.client.emit('PREPARE');
         },
-        // 拖拉出牌
-        dragStart: function (e) {
+        onDragstart:function(e){
+          var img = new Image(); 
+          img.src = ''; 
+          e.dataTransfer.setDragImage(img, 10, 10);
+          console.log(e.dataTransfer);
+          // e.target.click();
+        },
+        onDragenter:function(e){
+          e.target.click();
+        },
+        onDrop:function(e){
           e.preventDefault();
         },
         selectCard: function (card) {

@@ -107,6 +107,8 @@ function Game() {
   this.status = 0; // 0未开始 1叫分 2游戏中 3结束 4需要重发 5错误
   this.ratio = 1;// 分数翻倍数
   this.tmpFeng = 0;// 当前这一轮出分情况
+  this.winner=[];// 胜利者
+  this.loser=[];// 失败者
   this.lastCardInfo = {
     posId: '',
     len: 0,
@@ -384,13 +386,10 @@ Object.assign(
           return item.cards;
         }
       }
-      return null;
+      return [];
     },
     getCardIndexByPosId(card, posId) {
       var cards = this.getCardsByPosId(posId);
-      if(cards===null){
-        return -1;
-      }
       for (var i = 0, len = cards.length; i < len; i++) {
         var curr = cards[i];
         if (curr.value === card.value && curr.type === card.type) {
@@ -417,6 +416,8 @@ Object.assign(
       this.status = 0; //0未开始 1叫分 2游戏中 3结束 4需要重发 5错误
       this.ratio = 1;// 倍数
       this.tmpFeng = 0;// 当前出牌分数
+      this.winner=[];// 胜利者
+      this.loser=[];// 失败者
       this.lastCardInfo = {
         posId: '',
         len: 0,
@@ -486,6 +487,14 @@ Object.assign(
       // 谁先出，谁报的分就是最高的，暂时先这么处理
       this.userScore[firstPosId]=3;
     },
+    // 获取本轮分数
+    getTmpFeng(){
+      return this.tmpFeng;
+    },
+    // 根据位置，获取得分
+    getSumFeng(){
+      return this.sumFeng;
+    },
     getStatus() {
       return this.status;
     },
@@ -525,8 +534,36 @@ Object.assign(
     getNextPosId(posId){
       for (let i = 0; i < 7; i++){
         let nextId = (posId+1+i)%8;
-        if(this.getCardsByPosId(nextId)!==null){
+        if(this.getCardsByPosId(nextId).length!==0){
           return nextId;
+        }
+        else{
+          continue;
+        }
+      }
+    },
+    //判断下个队友轮到谁，最后出完牌大后让队友顺
+    getNextGroupPosId(posId){
+      if(posId === 0 || posId === 2 || posId === 4 || posId === 6){
+        for (let i = 0; i < 3; i++){
+          let nextId = (posId+2+2*i)%8;
+          if(this.getCardsByPosId(nextId).length!==0){
+            return nextId;
+          }
+          else{
+            continue;
+          }
+        }
+      }
+      if(posId === 1 || posId === 3 || posId === 5 || posId === 7){
+        for (let i = 0; i < 3; i++){
+          let nextId = (posId+2+2*i)%8;
+          if(this.getCardsByPosId(nextId).length!==0){
+            return nextId;
+          }
+          else{
+            continue;
+          }
         }
       }
     },
@@ -534,10 +571,14 @@ Object.assign(
     isGameOver() {
       // 0,2,4,6的牌都打完了，跑胜利
       if (this.contextCards[0].cards.length===0 & this.contextCards[2].cards.length===0 & this.contextCards[4].cards.length===0 & this.contextCards[6].cards.length===0) {
+        this.winner = [0,2,4,6];
+        this.loser = [1,3,5,7];
         return true;
       }
       // 1,3,5,7的牌都打完了，跑胜利
       if (this.contextCards[1].cards.length===0 & this.contextCards[3].cards.length===0 & this.contextCards[5].cards.length===0 & this.contextCards[7].cards.length===0) {
+        this.winner = [1,3,5,7];
+        this.loser = [0,2,4,6];
         return true;
       }
       // 0,2,4,6打完牌的人分数合到300分，得分胜利
@@ -556,38 +597,27 @@ Object.assign(
           }
         }
       }
-      if(shuangSum>=300 || danSum>=300){
+      if(shuangSum>=300){
+        this.winner = [0,2,4,6];
+        this.loser = [1,3,5,7];
         return true;
       }
-
+      if(danSum>=300){
+        this.winner = [1,3,5,7];
+        this.loser = [0,2,4,6];
+        return true;
+      }
       return false;
     },
     // 获取结果
     getResult() {
-      const diZhuData = this.getMaxScoreInfo();
-      const diZhuId = diZhuData.posId;
-      const posIds = [0, 1, 2,3,4,5,6,7];
-      var winnerId = '';
+      const scoreData = this.getMaxScoreInfo();// 默认3分
       var ret = {
-        winner: [],
-        loser: [],
-        score: diZhuData.score,
-        ratio: this.ratio
-      }
-      for (var i = 0; i < 8; i++) {
-        if (!this.contextCards[i].cards.length) {
-          winnerId = this.contextCards[i].id;
-          break;
-        }
-      }
-      posIds.splice(posIds.indexOf(diZhuId), 1)
-      if (winnerId === diZhuId) {
-        ret.winner.push(diZhuId);
-        ret.loser = posIds;
-      } else if (winnerId !== diZhuId) {
-        ret.winner = posIds;
-        ret.loser.push(diZhuId);
-      }
+        winner: this.winner,
+        loser: this.loser,
+        score: scoreData.score,
+        ratio: this.ratio, //默认1倍
+      };
       return ret;
     },
     next(posId, data) {
@@ -607,12 +637,13 @@ Object.assign(
           }
         } 
         else if (this.status === 2) {
+          
+
+          console.log("posId:"+posId);
+          console.log(this.getCardsByPosId(posId));
+
           // 获取下一个出牌的人
           this.contextPosId = this.getNextPosId(posId);
-          console.log("下一个出牌的人"+this.contextPosId);
-          console.log(posId);
-          console.log(data);
-
           const { type, len, key, status } = this.validate(posId, data);
           if (status) {
             this.lastCardInfo.type = type
@@ -621,16 +652,27 @@ Object.assign(
             this.lastCardInfo.posId = posId;
             this.sumCount[posId]++;
           }
+          this.removeCards(data, posId);
+
+          console.log("posId:"+posId);
+          console.log(this.getCardsByPosId(posId));
+
+
           this.tmpFeng =this.tmpFeng + this.sumCardsFeng(data);
           // 最后出牌的位置，又是当前位置，说明赢了一圈，将分数加给这个位置
           if(this.lastCardInfo.posId===this.contextPosId){
-            console.log(this.lastCardInfo.posId+"胜利了一圈");
             this.sumFeng[this.lastCardInfo.posId]+=this.tmpFeng;
             this.tmpFeng = 0;
           }
-          this.removeCards(data, posId);
-          console.log(this.sumFeng);
-          console.log(this.tmpFeng);
+          // 如果当前是最后的牌的话,找到队友出牌
+          if(this.getCardsByPosId(posId).length===0){
+            console.log("getNextGroupPosId");
+            this.contextPosId = this.getNextGroupPosId(this.lastCardInfo.posId);
+            // 相当于下个队友第一个出牌了
+            this.lastCardInfo.posId = this.contextPosId;
+          }
+
+          //判断游戏是否结束
           if (this.isGameOver()) {
             this.status = 3;
           }
@@ -638,7 +680,7 @@ Object.assign(
       } 
       
       else {
-        console.log("999999999");
+        // 一般不会进来
         this.status = 5;
       }
       return this;

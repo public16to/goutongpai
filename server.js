@@ -391,6 +391,8 @@ const proto = {
               cards: [],
               posId: dizhuPosId,
             },
+            sumFeng:{ 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0 },
+            tmpFeng:0,
             posId: dizhuPosId,
             timeout: 45,
             isPass: false,
@@ -419,6 +421,8 @@ const proto = {
           const { status } = ret;
           if (status || !data.length) {
             game.next(posId, data);
+            const sumFeng = game.getSumFeng();
+            const tmpFeng = game.getTmpFeng();
             this.broadCastRoom('CTX_PLAY_CHANGE', deskId, {
               ctxData: {
                 len: data.length,
@@ -427,11 +431,20 @@ const proto = {
                 cards: data,
                 posId
               },
+              sumFeng:sumFeng,
+              tmpFeng:tmpFeng,
               posId: game.getContextPosId(),
               timeout: 45,
               isPass
-            })
-            socket.emit('PLAY_CARD_SUCCESS', data)
+            });
+            const successData={
+              data:data,
+              tmpFeng:tmpFeng,
+              sumFeng:sumFeng,
+            }
+            socket.emit('PLAY_CARD_SUCCESS', successData)
+
+            // 游戏结束
             if (game.getStatus() === 3) {
               this.broadCastRoom('GAME_OVER', deskId, game.getResult())
               this.updatePosStatus(deskId, 0, 1)
